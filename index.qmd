@@ -13,10 +13,10 @@ page-layout: full
 
     <nav class="menu" aria-label="Navigation">
       <ul>
-        <li><a href="posts/index.qmd" data-preview="images/products.jpg">Blog</a></li>
-        <li><a href="about.qmd" data-preview="images/applications.jpg">About</a></li>
-        <li><a href="archive.qmd" data-preview="images/archive.jpg">Archive</a></li>
-        <li><a href="photography.qmd" data-preview="images/photography.jpg">Photography</a></li>
+        <li><a href="posts/" data-preview="images/products.jpg">Blog</a></li>
+        <li><a href="about.html" data-preview="images/applications.jpg">About</a></li>
+        <li><a href="archive.html" data-preview="images/archive.jpg">Archive</a></li>
+        <li><a href="photography.html" data-preview="images/photography.jpg">Photography</a></li>
       </ul>
     </nav>
   </aside>
