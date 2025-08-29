@@ -1,0 +1,13 @@
+---
+title: "Hello, Quarto + Python"
+date: 2025-08-28
+categories: [demo]
+---
+
+This is a simple post rendered with Python.
+
+```{python}
+import math
+vals = [round(math.sin(x/10), 3) for x in range(0, 31, 5)]
+vals
+```

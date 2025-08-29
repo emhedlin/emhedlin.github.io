@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Your Name"
+  navbar: false
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    include-after-body: preview.js
+
+# Default: execute code and cache/freeze outputs locally.
+execute:
+  freeze: auto
+
+# CI profile: don't execute notebooks, just use frozen outputs.
+# Use by setting QUARTO_PROFILE=ci (configured in GitHub Actions).
+profiles:
+  - id: ci
+    execute:
+      enabled: false
+      freeze: auto

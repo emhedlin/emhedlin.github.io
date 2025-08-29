@@ -1,0 +1,12 @@
+{
+  "hash": "d67f4ffe75cc396630df32e3d7e35509",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Hello, Quarto + Python\"\ndate: 2025-08-28\ncategories: [demo]\n---\n\nThis is a simple post rendered with Python.\n\n::: {#a12740cd .cell execution_count=1}\n``` {.python .cell-code}\nimport math\nvals = [round(math.sin(x/10), 3) for x in range(0, 31, 5)]\nvals\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n[0.0, 0.479, 0.841, 0.997, 0.909, 0.598, 0.141]\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "hello-world_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,27 @@
+---
+title: "Home"
+toc: false
+page-layout: full
+---
+
+<div class="frame">
+  <aside class="rail" aria-label="Primary">
+    <div class="brand">
+      <div class="name">Your Name</div>
+      <div class="role">Brand & Interaction Designer</div>
+    </div>
+
+    <nav class="menu" aria-label="Navigation">
+      <ul>
+        <li><a href="posts/index.qmd" data-preview="images/products.jpg">Blog</a></li>
+        <li><a href="about.qmd" data-preview="images/applications.jpg">About</a></li>
+        <li><a href="archive.qmd" data-preview="images/archive.jpg">Archive</a></li>
+        <li><a href="photography.qmd" data-preview="images/photography.jpg">Photography</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="preview" aria-live="polite">
+    <div class="preview-img" role="img" aria-label="Section preview"></div>
+  </main>
+</div>

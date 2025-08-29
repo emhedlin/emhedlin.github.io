@@ -1,0 +1,5 @@
+---
+title: "Archive"
+---
+
+This page can hold links to past projects or long-form writeups.

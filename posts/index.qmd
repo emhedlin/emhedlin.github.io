@@ -1,0 +1,11 @@
+---
+title: "Blog"
+listing:
+  contents: .
+  sort: "date desc"
+  type: default
+  categories: true
+page-layout: article
+---
+
+Welcome to the blog.
