@@ -1,10 +1,12 @@
 ---
-title: "Home"
-toc: false
-page-layout: full
-title-block: false
+title: ""
+page-layout: custom
+format:
+  html:
+    toc: false
 ---
 
+```{=html}
 <div class="frame">
   <aside class="rail" aria-label="Primary">
     <div class="brand">
@@ -13,21 +15,22 @@ title-block: false
     </div>
 
     <nav class="menu" aria-label="Navigation">
-      <ul>
-        <!-- Top-level sections -->
-        <li><a href="posts/" data-preview="images/products.jpg">Blog</a></li>
-        <li><a href="about.html" data-preview="images/applications.jpg">About</a></li>
-        <li><a href="archive.html" data-preview="images/archive.jpg">Archive</a></li>
-        <li><a href="photography.html" data-preview="images/photography.jpg">Photography</a></li>
-      </ul>
-
-      <!-- Example: individual posts preview (see Step 3 below) -->
-      <!--
-      <h3 class="menu-heading">Recent posts</h3>
-      <ul class="post-links">
-        <li><a href="posts/hello-world.html" data-preview="posts/images/hello-world.jpg">Hello, Quarto + Python</a></li>
-      </ul>
-      -->
+      <div class="menu-section">
+        <h3 class="menu-heading">Information</h3>
+        <ul>
+          <li><a href="posts/" data-preview="images/products.jpg">01 Blog</a></li>
+          <li><a href="about.html" data-preview="images/applications.jpg">02 About</a></li>
+          <li><a href="archive.html" data-preview="images/archive.jpg">03 Archive</a></li>
+          <li><a href="photography.html" data-preview="images/photography.jpg">04 Photography</a></li>
+        </ul>
+      </div>
+      
+      <div class="menu-section">
+        <h3 class="menu-heading">Archive</h3>
+        <ul class="secondary">
+          <li><a href="#">Photography</a></li>
+        </ul>
+      </div>
     </nav>
   </aside>
 
@@ -35,3 +38,4 @@ title-block: false
     <div class="preview-img" role="img" aria-label="Section preview"></div>
   </main>
 </div>
+```
