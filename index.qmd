@@ -2,22 +2,32 @@
 title: "Home"
 toc: false
 page-layout: full
+title-block: false
 ---
 
 <div class="frame">
   <aside class="rail" aria-label="Primary">
     <div class="brand">
-      <div class="name">Your Name</div>
-      <div class="role">Brand & Interaction Designer</div>
+      <div class="name">Erik Hedlin</div>
+      <div class="role">Data Scientist</div>
     </div>
 
     <nav class="menu" aria-label="Navigation">
       <ul>
+        <!-- Top-level sections -->
         <li><a href="posts/" data-preview="images/products.jpg">Blog</a></li>
         <li><a href="about.html" data-preview="images/applications.jpg">About</a></li>
         <li><a href="archive.html" data-preview="images/archive.jpg">Archive</a></li>
         <li><a href="photography.html" data-preview="images/photography.jpg">Photography</a></li>
       </ul>
+
+      <!-- Example: individual posts preview (see Step 3 below) -->
+      <!--
+      <h3 class="menu-heading">Recent posts</h3>
+      <ul class="post-links">
+        <li><a href="posts/hello-world.html" data-preview="posts/images/hello-world.jpg">Hello, Quarto + Python</a></li>
+      </ul>
+      -->
     </nav>
   </aside>
 

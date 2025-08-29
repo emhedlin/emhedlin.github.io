@@ -1,46 +1,100 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  background: #fafafa;
+}
+
 /* Layout */
 .frame {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   min-height: 100vh;
+  background: linear-gradient(to right, #fff 300px, #f0f0f0 300px);
 }
 
 .rail {
-  padding: 24px 18px;
+  padding: 40px 30px;
+  background: #fff;
 }
 
-.brand .name { font-weight: 700; }
-.brand .role { font-size: 0.9rem; color: #666; margin-bottom: 18px; }
+.brand {
+  margin-bottom: 40px;
+}
 
-.menu ul { list-style: none; padding: 0; margin: 0; }
-.menu li { margin: 8px 0; }
+.brand .name { 
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.brand .role { 
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 400;
+}
+
+/* Navigation */
+.menu {
+  margin-top: 60px;
+}
+
+.menu ul { 
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li { 
+  margin: 0;
+}
+
 .menu a {
   text-decoration: none;
-  color: #111;
-  display: inline-block;
-  padding: 2px 0;
+  color: #333;
+  display: block;
+  padding: 10px 0;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+  position: relative;
 }
+
 .menu a:hover,
 .menu a:focus-visible {
-  text-decoration: underline;
+  color: #000;
+  padding-left: 8px;
 }
 
 /* Preview panel */
 .preview {
   position: relative;
-  background: #f6f6f6;
+  background: #f0f0f0;
   display: grid;
   place-items: center;
+  padding: 40px;
 }
 
 .preview-img {
-  width: min(820px, 80%);
+  width: min(900px, 85%);
   aspect-ratio: 16 / 10;
-  background: #e9e9e9 center / cover no-repeat;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.08);
-  transition: opacity .15s ease;
+  background: #fff center / contain no-repeat;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0; /* hidden until a menu item is hovered or focused */
+  transform: scale(0.95);
+}
+
+.preview-img.active {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* Small screens: stack */
