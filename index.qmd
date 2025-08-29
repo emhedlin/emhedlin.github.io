@@ -11,7 +11,7 @@ format:
   <aside class="rail" aria-label="Primary">
     <div class="brand">
       <div class="name">Erik Hedlin</div>
-      <div class="role">Data Scientist</div>
+      <!-- <div class="role">Data Scientist</div> -->
     </div>
 
     <nav class="menu" aria-label="Navigation">
@@ -35,6 +35,10 @@ format:
   </aside>
 
   <main class="preview" aria-live="polite">
+    <div class="default-content">
+      <div id="d3-visualization"></div>
+      <div class="viz-subtitle">Interactive Data Visualization</div>
+    </div>
     <div class="preview-img" role="img" aria-label="Section preview"></div>
   </main>
 </div>

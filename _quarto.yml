@@ -4,6 +4,7 @@ project:
   resources:
     - styles.css
     - preview.js
+    - d3-viz.js
     - images/
 
 
@@ -15,7 +16,11 @@ format:
   html:
     theme: none
     css: styles.css
-    include-after-body: preview.js
+    include-in-header:
+      - text: '<script src="https://d3js.org/d3.v7.min.js"></script>'
+    include-after-body: 
+      - preview.js
+      - d3-viz.js
     minimal: true
 
 # Default: execute code and cache/freeze outputs locally.
