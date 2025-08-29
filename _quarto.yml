@@ -1,6 +1,11 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - styles.css
+    - preview.js
+    - images/
+
 
 website:
   title: "Your Name"
