@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Your Name - Home</title>
+<title>Erik Hedlin - Home</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,17 +103,26 @@ ul.task-list li input[type="checkbox"] {
 <div class="frame page-columns page-full">
 <aside class="rail" aria-label="Primary">
 <div class="brand">
-<pre><code>  &lt;div class="name"&gt;Your Name&lt;/div&gt;
-  &lt;div class="role"&gt;Brand &amp; Interaction Designer&lt;/div&gt;
+<pre><code>  &lt;div class="name"&gt;Erik Hedlin&lt;/div&gt;
+  &lt;div class="role"&gt;Data Scientist&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;nav class="menu" aria-label="Navigation"&gt;
   &lt;ul&gt;
+    &lt;!-- Top-level sections --&gt;
     &lt;li&gt;&lt;a href="posts/" data-preview="images/products.jpg"&gt;Blog&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;&lt;a href="about.html" data-preview="images/applications.jpg"&gt;About&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;&lt;a href="archive.html" data-preview="images/archive.jpg"&gt;Archive&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;&lt;a href="photography.html" data-preview="images/photography.jpg"&gt;Photography&lt;/a&gt;&lt;/li&gt;
   &lt;/ul&gt;
+
+  &lt;!-- Example: individual posts preview (see Step 3 below) --&gt;
+  &lt;!--
+  &lt;h3 class="menu-heading"&gt;Recent posts&lt;/h3&gt;
+  &lt;ul class="post-links"&gt;
+    &lt;li&gt;&lt;a href="posts/hello-world.html" data-preview="posts/images/hello-world.jpg"&gt;Hello, Quarto + Python&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  --&gt;
 &lt;/nav&gt;</code></pre>
 </div></aside>
 <main class="preview" aria-live="polite">
@@ -130,15 +139,24 @@ ul.task-list li input[type="checkbox"] {
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".preview-img");
   const links = document.querySelectorAll(".menu a");
+  let currentTimeout;
 
   const show = (url) => {
     if (!container) return;
+    clearTimeout(currentTimeout);
     container.style.backgroundImage = `url('${url}')`;
     container.style.opacity = 1;
+    container.style.transform = 'scale(1)';
+    container.classList.add('active');
   };
+  
   const hide = () => {
     if (!container) return;
-    container.style.opacity = 0;
+    currentTimeout = setTimeout(() => {
+      container.style.opacity = 0;
+      container.style.transform = 'scale(0.95)';
+      container.classList.remove('active');
+    }, 100);
   };
 
   links.forEach(link => {
@@ -148,6 +166,15 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("mouseleave", hide);
     link.addEventListener("blur",       hide);
   });
+
+  // Show first image by default
+  const firstLink = links[0];
+  if (firstLink) {
+    const firstUrl = firstLink.getAttribute("data-preview");
+    if (firstUrl) {
+      setTimeout(() => show(firstUrl), 300);
+    }
+  }
 });
 </script>
 <script id="quarto-html-after-body" type="application/javascript">

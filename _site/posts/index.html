@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Your Name - Blog</title>
+<title>Erik Hedlin - Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -169,7 +169,7 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="demo" data-listing-date-sort="1756353600000" data-listing-file-modified-sort="1756494645227" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="18">
+<div class="quarto-post image-right" data-index="0" data-categories="demo" data-listing-date-sort="1756353600000" data-listing-file-modified-sort="1756495479869" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="18">
 <div class="thumbnail">
 <p><a href="../posts/hello-world.html" class="no-external"></a></p><a href="../posts/hello-world.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
@@ -208,15 +208,24 @@ No matching items
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".preview-img");
   const links = document.querySelectorAll(".menu a");
+  let currentTimeout;
 
   const show = (url) => {
     if (!container) return;
+    clearTimeout(currentTimeout);
     container.style.backgroundImage = `url('${url}')`;
     container.style.opacity = 1;
+    container.style.transform = 'scale(1)';
+    container.classList.add('active');
   };
+  
   const hide = () => {
     if (!container) return;
-    container.style.opacity = 0;
+    currentTimeout = setTimeout(() => {
+      container.style.opacity = 0;
+      container.style.transform = 'scale(0.95)';
+      container.classList.remove('active');
+    }, 100);
   };
 
   links.forEach(link => {
@@ -226,6 +235,15 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("mouseleave", hide);
     link.addEventListener("blur",       hide);
   });
+
+  // Show first image by default
+  const firstLink = links[0];
+  if (firstLink) {
+    const firstUrl = firstLink.getAttribute("data-preview");
+    if (firstUrl) {
+      setTimeout(() => show(firstUrl), 300);
+    }
+  }
 });
 </script>
 <script id="quarto-html-after-body" type="application/javascript">
