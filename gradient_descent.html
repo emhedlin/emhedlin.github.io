@@ -8,7 +8,7 @@
     :root{ 
       --bg: transparent;
       --mesh: #f0f0f0;
-      --edges: #949494;
+      --edges: #bbbbbb;
       --dot: #000000;
       --trail: #000000;
       --target: #000000;
@@ -87,6 +87,7 @@
     
     // Aesthetics
     meshOpacity: 0.15,
+    edgeWidth: 0.5,    // Width of wireframe edges
     trailLength: 50,
     dotRadius: 0.03,
     
@@ -177,7 +178,7 @@
     const wireGeom = new THREE.WireframeGeometry(geom);
     const wireMat = new THREE.LineBasicMaterial({
       color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--edges').trim()),
-      linewidth: 1
+      linewidth: CONFIG.edgeWidth
     });
     wireframe = new THREE.LineSegments(wireGeom, wireMat);
     scene.add(wireframe);

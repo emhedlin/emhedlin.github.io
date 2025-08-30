@@ -10,7 +10,7 @@ format:
 <div class="frame">
   <aside class="rail" aria-label="Primary">
     <div class="brand">
-      <div class="name">Erik Hedlin</div>
+      <div class="name">erik hedlin</div>
       <!-- <div class="role">Data Scientist</div> -->
     </div>
 
