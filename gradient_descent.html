@@ -70,8 +70,8 @@
     showFunction: false,     // Show 2D function plot
     
     // 3D Surface - Low poly
-    size: 4,
-    segments: 100, // Low poly
+    size: 3,
+    segments: 20, // Low poly
     bowlX: 0.8,
     bowlZ: 1.2,
     coupling: 0.4,
@@ -80,7 +80,7 @@
     rippleFreqZ: 3.2,
     secondaryRippleAmp: 0.1,
     secondaryRippleFreq: 5.5,
-    noiseScale: 0.2,
+    noiseScale: 0.4,
     
     // Animation
     cycleSeconds: 8,
@@ -486,6 +486,11 @@
   let pos = { x: L * 0.8, z: L * 0.8 };
   let vel = { x: 0, z: 0 };
   
+  // Camera view state
+  let cameraView = 'top'; // 'side' or 'top'
+  let cameraTransition = 1; // 0 to 1 during transition (1 = fully transitioned)
+  let cameraTransitionSpeed = 0.05; // Speed of transition
+  
   // LOESS parameters that improve during descent
   let loessParams = {
     span: 3.5,      // Start with very wide span (oversmoothed)
@@ -494,10 +499,14 @@
 
   generateTargetFunction();
 
-  // Add click handler to skip to next loop
+  // Add click handler to toggle camera view
   document.getElementById('container').addEventListener('click', (e) => {
     e.preventDefault();
-    skipToNext = true;
+    if (CONFIG.showLossSurface) {
+      // Toggle between side and top view
+      cameraView = cameraView === 'side' ? 'top' : 'side';
+      cameraTransition = 0; // Reset transition
+    }
   });
 
   function animate() {
@@ -570,7 +579,7 @@
     
     // Update 3D surface if shown
     if (CONFIG.showLossSurface) {
-      coefs.phase = elapsed * 0.15;
+      // coefs.phase = elapsed * 0.15;
       updateSurface();
       
       // Update dot position
@@ -589,10 +598,45 @@
       trailGeom.attributes.position.needsUpdate = true;
       trailGeom.setDrawRange(0, trailCount);
       
-      // Camera rotation
+      // Camera animation with smooth transition
+      if (cameraTransition < 1) {
+        cameraTransition = Math.min(1, cameraTransition + cameraTransitionSpeed);
+      }
+      
       const angle = elapsed * 0.08;
-      camera.position.x = Math.cos(angle) * 6;
-      camera.position.z = Math.sin(angle) * 6;
+      
+      // Define camera positions
+      const sidePos = {
+        x: Math.cos(angle) * 6,
+        y: 4,
+        z: Math.sin(angle) * 6
+      };
+      
+      const topPos = {
+        x: 0,
+        y: 10,
+        z: 0.01 // Slight offset to avoid gimbal lock
+      };
+      
+      // Interpolate between positions based on current view
+      let targetPos, currentPos;
+      if (cameraView === 'top') {
+        currentPos = sidePos;
+        targetPos = topPos;
+      } else {
+        currentPos = topPos;
+        targetPos = sidePos;
+      }
+      
+      // Smooth easing function (ease-in-out)
+      const t = cameraTransition;
+      const easedT = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      
+      // Interpolate camera position
+      camera.position.x = currentPos.x + (targetPos.x - currentPos.x) * easedT;
+      camera.position.y = currentPos.y + (targetPos.y - currentPos.y) * easedT;
+      camera.position.z = currentPos.z + (targetPos.z - currentPos.z) * easedT;
+      
       camera.lookAt(0, 0, 0);
       
       // Render 3D

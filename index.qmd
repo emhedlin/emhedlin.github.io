@@ -10,7 +10,7 @@ format:
 <div class="frame">
   <aside class="rail" aria-label="Primary">
     <div class="brand">
-      <div class="name">erik hedlin</div>
+      <a href="about.html" class="name" data-preview="images/about.jpg">erik hedlin</a>
       <!-- <div class="role">Data Scientist</div> -->
     </div>
 
