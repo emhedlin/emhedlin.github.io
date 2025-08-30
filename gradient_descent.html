@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gradient Descent Visualization</title>
+  <style>
+    :root{ 
+      --bg: transparent;
+      --mesh: #f0f0f0;
+      --edges: #949494;
+      --dot: #000000;
+      --trail: #000000;
+      --target: #000000;
+      --approx: #df9da6;
+    }
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #container {
+      position: fixed;
+      inset: 0;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      cursor: pointer;
+    }
+    #viz-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      width: 100%;
+      max-width: 100%;
+    }
+    #loss-surface {
+      width: 100%;
+      height: 55vh;
+    }
+    #function-plot {
+      width: 100%;
+      height: 45vh;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="viz-wrapper">
+      <div id="loss-surface"></div>
+      <div id="function-plot"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script>
+  // Configuration
+  const CONFIG = {
+    // Display options
+    showLossSurface: true,  // Show 3D loss surface
+    showFunction: false,     // Show 2D function plot
+    
+    // 3D Surface - Low poly
+    size: 3,
+    segments: 24, // Low poly
+    bowlX: 0.5,
+    bowlZ: 1.0,
+    coupling: 0.5,
+    rippleAmp: 0.5,
+    rippleFreqX: 1.2,
+    rippleFreqZ: 1.9,
+    
+    // Animation
+    cycleSeconds: 8,
+    stepsPerCycle: 120,
+    eta: 0.05,
+    momentum: 0.10,
+    
+    // Aesthetics
+    meshOpacity: 0.15,
+    trailLength: 50,
+    dotRadius: 0.03,
+    
+    // 2D Function
+    functionSamples: 250,
+    targetOpacity: 1.0,
+    approxOpacity: 0.2,
+    maxOverlays: 30
+  };
+
+  // ===== DYNAMIC LAYOUT =====
+  // Update element visibility and sizing based on config
+  const mount3D = document.getElementById('loss-surface');
+  const mount2D = document.getElementById('function-plot');
+  
+  if (!CONFIG.showLossSurface) {
+    mount3D.style.display = 'none';
+  }
+  if (!CONFIG.showFunction) {
+    mount2D.style.display = 'none';
+  }
+  
+  // Adjust heights based on what's shown
+  let height3DRatio, height2DRatio;
+  if (CONFIG.showLossSurface && CONFIG.showFunction) {
+    height3DRatio = 0.55;
+    height2DRatio = 0.45;
+  } else if (CONFIG.showLossSurface && !CONFIG.showFunction) {
+    height3DRatio = 1.0;
+    height2DRatio = 0;
+  } else if (!CONFIG.showLossSurface && CONFIG.showFunction) {
+    height3DRatio = 0;
+    height2DRatio = 1.0;
+  } else {
+    height3DRatio = 0.5;
+    height2DRatio = 0.5;
+  }
+  
+  mount3D.style.height = `${height3DRatio * 100}vh`;
+  mount2D.style.height = `${height2DRatio * 100}vh`;
+  
+  // ===== 3D LOSS SURFACE =====
+  let scene, renderer, camera, mesh, wireframe, dot, trail, trailGeom, trailPositions;
+  
+  if (CONFIG.showLossSurface) {
+    scene = new THREE.Scene();
+    
+    // Get actual dimensions
+    const width3D = mount3D.clientWidth || window.innerWidth;
+    const height3D = window.innerHeight * height3DRatio;
+  
+    renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      alpha: true 
+    });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(width3D, height3D);
+    mount3D.appendChild(renderer.domElement);
+
+    camera = new THREE.PerspectiveCamera(35, width3D / height3D, 0.1, 100);
+    camera.position.set(6, 4, 6);
+    camera.lookAt(0, 0, 0);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambient);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.4);
+    dir.position.set(5, 8, 3);
+    scene.add(dir);
+
+    // Low poly surface mesh
+    const segments = Math.floor(CONFIG.segments);
+    const geom = new THREE.PlaneGeometry(CONFIG.size, CONFIG.size, segments, segments);
+    geom.rotateX(-Math.PI/2);
+
+    // Flat shaded material for low poly look
+    const mat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--mesh').trim()),
+      transparent: true,
+      opacity: CONFIG.meshOpacity,
+      side: THREE.DoubleSide
+    });
+    mesh = new THREE.Mesh(geom, mat);
+    scene.add(mesh);
+
+    // Wireframe edges
+    const wireGeom = new THREE.WireframeGeometry(geom);
+    const wireMat = new THREE.LineBasicMaterial({
+      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--edges').trim()),
+      linewidth: 1
+    });
+    wireframe = new THREE.LineSegments(wireGeom, wireMat);
+    scene.add(wireframe);
+
+    // Dot
+    const dotGeom = new THREE.SphereGeometry(CONFIG.dotRadius, 8, 8);
+    const dotMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--dot').trim())
+    });
+    dot = new THREE.Mesh(dotGeom, dotMat);
+    scene.add(dot);
+
+    // Trail
+    trailGeom = new THREE.BufferGeometry();
+    const trailMat = new THREE.LineBasicMaterial({
+      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--trail').trim()),
+      transparent: true,
+      opacity: 0.3
+    });
+    trailPositions = new Float32Array((CONFIG.trailLength + 1) * 3);
+    trailGeom.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+    trail = new THREE.Line(trailGeom, trailMat);
+    scene.add(trail);
+  }
+
+  // Surface function (shared between both modes)
+  const L = CONFIG.size / 2;
+  const coefs = {
+    a: CONFIG.bowlX,
+    b: CONFIG.bowlZ,
+    c: CONFIG.coupling,
+    kx: CONFIG.rippleFreqX,
+    kz: CONFIG.rippleFreqZ,
+    phase: 0
+  };
+
+  function f(x, z) {
+    const u = x / L;
+    const v = z / L;
+    const bowl = coefs.a * u * u + coefs.b * v * v + coefs.c * u * v;
+    const ripple = CONFIG.rippleAmp * Math.sin(coefs.kx * u + coefs.kz * v + coefs.phase);
+    return bowl + ripple;
+  }
+
+  function grad(x, z) {
+    const eps = 1e-3 * CONFIG.size;
+    const fx1 = f(x + eps, z);
+    const fx0 = f(x - eps, z);
+    const fz1 = f(x, z + eps);
+    const fz0 = f(x, z - eps);
+    return { gx: (fx1 - fx0) / (2 * eps), gz: (fz1 - fz0) / (2 * eps) };
+  }
+
+  // Update surface
+  function updateSurface() {
+    if (!CONFIG.showLossSurface) return;
+    const pos = mesh.geometry.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const z = pos.getZ(i);
+      pos.setY(i, f(x, z));
+    }
+    pos.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+    
+    // Update wireframe
+    wireframe.geometry.dispose();
+    wireframe.geometry = new THREE.WireframeGeometry(mesh.geometry);
+  }
+
+  // ===== 2D FUNCTION PLOT =====
+  let canvas2D, ctx;
+  
+  if (CONFIG.showFunction) {
+    canvas2D = document.createElement('canvas');
+    const width2D = mount2D.clientWidth || window.innerWidth;
+    const height2D = window.innerHeight * height2DRatio;
+    canvas2D.width = width2D;
+    canvas2D.height = height2D;
+    canvas2D.style.width = '100%';
+    canvas2D.style.height = '100%';
+    mount2D.appendChild(canvas2D);
+    ctx = canvas2D.getContext('2d');
+  }
+
+  // Generate target function (Gaussian process-like)
+  let targetFunction = [];
+  function generateTargetFunction() {
+    targetFunction = [];
+    const n = CONFIG.functionSamples;
+    
+    // Generate more varied function with higher peaks and lower valleys
+    const kernelPoints = 12;
+    const kernelValues = Array(kernelPoints).fill(0).map(() => (Math.random() * 4 - 2)); // Increased range
+    
+    for (let i = 0; i < n; i++) {
+      const x = (i / (n - 1)) * 2 * Math.PI;
+      let y = 0;
+      
+      // Sum of weighted Gaussians for smooth curve with more variation
+      for (let k = 0; k < kernelPoints; k++) {
+        const center = (k / (kernelPoints - 1)) * 2 * Math.PI;
+        const weight = Math.exp(-Math.pow(x - center, 2) / 0.3); // Sharper peaks
+        y += kernelValues[k] * weight;
+      }
+      
+      // Add some additional sinusoidal variation for more complexity
+      y += Math.sin(x * 2.5) * 0.3 + Math.cos(x * 1.7) * 0.2;
+      
+      targetFunction.push({ x, y: y * 0.5 }); // Increased amplitude
+    }
+  }
+
+  // Convert function value to canvas coordinates
+  function toCanvas(x, y) {
+    const padding = 40;
+    const width = canvas2D.width - 2 * padding;
+    const height = canvas2D.height - 2 * padding;
+    
+    const canvasX = padding + (x / (2 * Math.PI)) * width;
+    const canvasY = padding + height/2 - y * height/4; // Adjusted for larger range
+    
+    return { x: canvasX, y: canvasY };
+  }
+
+  // Draw function
+  function drawFunction(points, color, opacity, lineWidth = 1.5, behindTarget = false) {
+    if (points.length < 2) return;
+    
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    if (behindTarget) {
+      ctx.globalCompositeOperation = 'destination-over';
+    }
+    
+    ctx.beginPath();
+    
+    const start = toCanvas(points[0].x, points[0].y);
+    ctx.moveTo(start.x, start.y);
+    
+    for (let i = 1; i < points.length; i++) {
+      const p = toCanvas(points[i].x, points[i].y);
+      ctx.lineTo(p.x, p.y);
+    }
+    
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // LOESS-style local smoothing approximation
+  function generateApproximation(span, noiseLevel) {
+    const points = [];
+    const n = CONFIG.functionSamples;
+    
+    // Calculate global approximation components
+    const targetMean = targetFunction.reduce((sum, p) => sum + p.y, 0) / targetFunction.length;
+    const trend = (Math.random() - 0.5) * 0.3;
+    
+    for (let i = 0; i < n; i++) {
+      const x = (i / (n - 1)) * 2 * Math.PI;
+      
+      // Global smooth approximation
+      let globalY = targetMean + trend * Math.sin(x * 0.5);
+      globalY += Math.sin(x * 0.3) * noiseLevel * 1.2;
+      globalY += Math.cos(x * 0.7) * noiseLevel * 0.8;
+      globalY += Math.sin(x * 0.2) * noiseLevel * 0.6;
+      
+      // Local LOESS approximation
+      let localY = 0;
+      let weightedSum = 0;
+      let weightSum = 0;
+      
+      const spanWidth = span * Math.PI;
+      
+      for (let j = 0; j < targetFunction.length; j++) {
+        const targetPoint = targetFunction[j];
+        const distance = Math.abs(targetPoint.x - x);
+        const wrapDistance = Math.min(distance, 2 * Math.PI - distance);
+        
+        if (wrapDistance <= spanWidth) {
+          const u = wrapDistance / spanWidth;
+          const weight = u <= 1 ? Math.pow(1 - Math.pow(u, 3), 3) : 0;
+          
+          weightedSum += targetPoint.y * weight;
+          weightSum += weight;
+        }
+      }
+      
+      localY = weightSum > 0 ? weightedSum / weightSum : globalY;
+      
+      // Smooth transition between global and local
+      // When span > 2.5: mostly global
+      // When span < 0.8: mostly local  
+      // In between: gradual blend
+      let blendFactor = 0;
+      if (span > 2.5) {
+        blendFactor = 0; // All global
+      } else if (span < 0.8) {
+        blendFactor = 1; // All local
+      } else {
+        // Smooth transition from 0 to 1
+        blendFactor = (2.5 - span) / (2.5 - 0.8);
+        blendFactor = Math.pow(blendFactor, 2); // Ease in curve
+      }
+      
+      // Blend global and local approximations
+      let y = globalY * (1 - blendFactor) + localY * blendFactor;
+      
+      // Add noise that decreases with better fits
+      const noiseAmount = noiseLevel * (1 - blendFactor * 0.7);
+      const randomNoise = (Math.random() - 0.5) * 2 * noiseAmount * 0.4;
+      y += randomNoise;
+      
+      points.push({ x, y });
+    }
+    
+    return points;
+  }
+
+  // ===== ANIMATION LOOP =====
+  let startTime = Date.now();
+  let currentStep = 0;
+  let pathHistory = [];
+  let approximations = [];
+  let skipToNext = false;
+  
+  // Initialize position
+  let pos = { x: L * 0.8, z: L * 0.8 };
+  let vel = { x: 0, z: 0 };
+  
+  // LOESS parameters that improve during descent
+  let loessParams = {
+    span: 3.5,      // Start with very wide span (oversmoothed)
+    noiseLevel: 0.4  // Start with moderate noise
+  };
+
+  generateTargetFunction();
+
+  // Add click handler to skip to next loop
+  document.getElementById('container').addEventListener('click', (e) => {
+    e.preventDefault();
+    skipToNext = true;
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    
+    const now = Date.now();
+    const elapsed = (now - startTime) / 1000;
+    let cycleTime = elapsed % CONFIG.cycleSeconds;
+    
+    // Handle skip to next loop
+    if (skipToNext) {
+      startTime = now - (CONFIG.cycleSeconds * 1000); // Force cycle end
+      cycleTime = CONFIG.cycleSeconds;
+      skipToNext = false;
+    }
+    
+    const stepProgress = (cycleTime / CONFIG.cycleSeconds) * CONFIG.stepsPerCycle;
+    const step = Math.floor(stepProgress);
+    
+    // Reset at cycle start or when skipping
+    if ((step === 0 && currentStep !== 0) || cycleTime >= CONFIG.cycleSeconds) {
+      pos = { x: L * 0.7 * (Math.random() * 2 - 1), z: L * 0.7 * (Math.random() * 2 - 1) };
+      vel = { x: 0, z: 0 };
+      pathHistory = [];
+      approximations = [];
+      generateTargetFunction();
+      
+      // Reset LOESS parameters
+      loessParams = {
+        span: 3.0 + Math.random() * 1.0,    // Start very oversmoothed
+        noiseLevel: 0.35 + Math.random() * 0.15  // Start with moderate noise
+      };
+    }
+    
+    // Update gradient descent
+    if (step !== currentStep) {
+      const g = grad(pos.x, pos.z);
+      vel.x = CONFIG.momentum * vel.x + (1 - CONFIG.momentum) * g.gx;
+      vel.z = CONFIG.momentum * vel.z + (1 - CONFIG.momentum) * g.gz;
+      pos.x -= CONFIG.eta * vel.x;
+      pos.z -= CONFIG.eta * vel.z;
+      
+      // Clamp position
+      pos.x = Math.max(-L * 0.95, Math.min(L * 0.95, pos.x));
+      pos.z = Math.max(-L * 0.95, Math.min(L * 0.95, pos.z));
+      
+      pathHistory.push({ ...pos });
+      
+      // Improve LOESS fit (decrease span = tighter fit, decrease noise)
+      const progress = step / CONFIG.stepsPerCycle;
+      
+      // Progressive span reduction for tighter fit (slower with more iterations)
+      const targetSpan = 0.15; // Very tight final fit
+      const spanReduction = (loessParams.span - targetSpan) * 0.04;
+      loessParams.span = Math.max(targetSpan, loessParams.span - spanReduction);
+      
+      // Progressive noise reduction (slower with more iterations)
+      const targetNoise = 0.02; // Almost no noise at the end
+      const noiseReduction = (loessParams.noiseLevel - targetNoise) * 0.07;
+      loessParams.noiseLevel = Math.max(targetNoise, loessParams.noiseLevel - noiseReduction);
+      
+      // Add new approximation
+      approximations.push(generateApproximation(loessParams.span, loessParams.noiseLevel));
+      if (approximations.length > CONFIG.maxOverlays) {
+        approximations.shift();
+      }
+      
+      currentStep = step;
+    }
+    
+    // Update 3D surface if shown
+    if (CONFIG.showLossSurface) {
+      coefs.phase = elapsed * 0.15;
+      updateSurface();
+      
+      // Update dot position
+      const y = f(pos.x, pos.z);
+      dot.position.set(pos.x, y + 0.03, pos.z);
+      
+      // Update trail
+      const trailCount = Math.min(pathHistory.length, CONFIG.trailLength);
+      for (let i = 0; i < trailCount; i++) {
+        const p = pathHistory[pathHistory.length - trailCount + i];
+        const idx = i * 3;
+        trailPositions[idx] = p.x;
+        trailPositions[idx + 1] = f(p.x, p.z) + 0.002;
+        trailPositions[idx + 2] = p.z;
+      }
+      trailGeom.attributes.position.needsUpdate = true;
+      trailGeom.setDrawRange(0, trailCount);
+      
+      // Camera rotation
+      const angle = elapsed * 0.08;
+      camera.position.x = Math.cos(angle) * 6;
+      camera.position.z = Math.sin(angle) * 6;
+      camera.lookAt(0, 0, 0);
+      
+      // Render 3D
+      renderer.render(scene, camera);
+    }
+    
+    // Clear and render 2D if shown
+    if (CONFIG.showFunction) {
+      ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+      
+      // Draw subtle axis
+      ctx.strokeStyle = '#d0d0d0';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(60, canvas2D.height/2);
+      ctx.lineTo(canvas2D.width - 60, canvas2D.height/2);
+      ctx.stroke();
+      
+      // Draw approximations BEHIND target (older ones are fainter)
+      approximations.forEach((approx, i) => {
+        const age = i / approximations.length;
+        const opacity = CONFIG.approxOpacity * (0.5 + 0.5 * age);
+        drawFunction(approx, getComputedStyle(document.documentElement).getPropertyValue('--approx').trim(), opacity, 1.2, true);
+      });
+      
+      // Draw target function on top
+      drawFunction(targetFunction, getComputedStyle(document.documentElement).getPropertyValue('--target').trim(), CONFIG.targetOpacity, 2, false);
+    }
+  }
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    if (CONFIG.showLossSurface) {
+      const newWidth3D = mount3D.clientWidth || window.innerWidth;
+      const newHeight3D = window.innerHeight * height3DRatio;
+      
+      camera.aspect = newWidth3D / newHeight3D;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newWidth3D, newHeight3D);
+    }
+    
+    if (CONFIG.showFunction) {
+      const newWidth2D = mount2D.clientWidth || window.innerWidth;
+      const newHeight2D = window.innerHeight * height2DRatio;
+      
+      canvas2D.width = newWidth2D;
+      canvas2D.height = newHeight2D;
+    }
+  });
+  
+  animate();
+  </script>
+</body>
+</html>

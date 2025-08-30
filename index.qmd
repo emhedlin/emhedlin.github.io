@@ -36,8 +36,7 @@ format:
 
   <main class="preview" aria-live="polite">
     <div class="default-content">
-      <div id="d3-visualization"></div>
-      <div class="viz-subtitle">Interactive Data Visualization</div>
+      <iframe src="gradient_descent.html" class="gradient-viz" title="3D Gradient Descent Visualization"></iframe>
     </div>
     <div class="preview-img" role="img" aria-label="Section preview"></div>
   </main>
