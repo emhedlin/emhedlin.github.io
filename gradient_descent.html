@@ -70,26 +70,30 @@
     showFunction: false,     // Show 2D function plot
     
     // 3D Surface - Low poly
-    size: 3,
-    segments: 24, // Low poly
-    bowlX: 0.5,
-    bowlZ: 1.0,
-    coupling: 0.5,
-    rippleAmp: 0.5,
-    rippleFreqX: 1.2,
-    rippleFreqZ: 1.9,
+    size: 4,
+    segments: 100, // Low poly
+    bowlX: 0.8,
+    bowlZ: 1.2,
+    coupling: 0.4,
+    rippleAmp: 0.2,
+    rippleFreqX: 2.5,
+    rippleFreqZ: 3.2,
+    secondaryRippleAmp: 0.1,
+    secondaryRippleFreq: 5.5,
+    noiseScale: 0.2,
     
     // Animation
     cycleSeconds: 8,
     stepsPerCycle: 120,
-    eta: 0.05,
-    momentum: 0.10,
+    eta: 0.09,
+    momentum: 0.5,
     
     // Aesthetics
     meshOpacity: 0.15,
-    edgeWidth: 0.5,    // Width of wireframe edges
+    edgeWidth: 1,    // Width of wireframe edges (limited by WebGL)
+    sketchyAmount: 0.002,  // Amount of hand-drawn wobble (0 = perfect grid)
     trailLength: 50,
-    dotRadius: 0.03,
+    dotRadius: 0.02,
     
     // 2D Function
     functionSamples: 250,
@@ -163,6 +167,20 @@
     const segments = Math.floor(CONFIG.segments);
     const geom = new THREE.PlaneGeometry(CONFIG.size, CONFIG.size, segments, segments);
     geom.rotateX(-Math.PI/2);
+    
+    // Add sketchy hand-drawn distortion to vertices
+    const pos = geom.attributes.position;
+    const sketchyOffsets = new Float32Array(pos.count * 3);
+    for (let i = 0; i < pos.count; i++) {
+      // Create persistent random offsets for each vertex
+      sketchyOffsets[i * 3] = (Math.random() - 0.5) * CONFIG.sketchyAmount * CONFIG.size;
+      sketchyOffsets[i * 3 + 1] = 0; // Don't distort Y (height)
+      sketchyOffsets[i * 3 + 2] = (Math.random() - 0.5) * CONFIG.sketchyAmount * CONFIG.size;
+    }
+    
+    // Store original positions and offsets for later use
+    geom.userData.sketchyOffsets = sketchyOffsets;
+    geom.userData.originalPositions = pos.array.slice();
 
     // Flat shaded material for low poly look
     const mat = new THREE.MeshBasicMaterial({
@@ -174,8 +192,33 @@
     mesh = new THREE.Mesh(geom, mat);
     scene.add(mesh);
 
-    // Wireframe edges
-    const wireGeom = new THREE.WireframeGeometry(geom);
+    // Custom wireframe with square grid (no diagonals)
+    const wireGeom = new THREE.BufferGeometry();
+    const wireIndices = [];
+    
+    // Create horizontal and vertical lines only (no diagonals)
+    const gridSize = segments + 1;
+    
+    // Horizontal lines
+    for (let j = 0; j < gridSize; j++) {
+      for (let i = 0; i < segments; i++) {
+        const idx = j * gridSize + i;
+        wireIndices.push(idx, idx + 1);
+      }
+    }
+    
+    // Vertical lines
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < segments; j++) {
+        const idx = j * gridSize + i;
+        wireIndices.push(idx, idx + gridSize);
+      }
+    }
+    
+    // Share vertices with the mesh but create custom edges
+    wireGeom.setAttribute('position', geom.getAttribute('position'));
+    wireGeom.setIndex(wireIndices);
+    
     const wireMat = new THREE.LineBasicMaterial({
       color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--edges').trim()),
       linewidth: CONFIG.edgeWidth
@@ -218,9 +261,25 @@
   function f(x, z) {
     const u = x / L;
     const v = z / L;
+    
+    // Primary bowl shape
     const bowl = coefs.a * u * u + coefs.b * v * v + coefs.c * u * v;
-    const ripple = CONFIG.rippleAmp * Math.sin(coefs.kx * u + coefs.kz * v + coefs.phase);
-    return bowl + ripple;
+    
+    // Primary ripples
+    const ripple1 = CONFIG.rippleAmp * Math.sin(coefs.kx * u + coefs.kz * v + coefs.phase);
+    
+    // Secondary ripples for more detail
+    const ripple2 = CONFIG.secondaryRippleAmp * Math.cos(CONFIG.secondaryRippleFreq * u * v + coefs.phase * 1.5);
+    
+    // Additional waves for complexity
+    const wave1 = CONFIG.noiseScale * Math.sin(3.7 * u + coefs.phase * 0.8) * Math.cos(2.3 * v);
+    const wave2 = CONFIG.noiseScale * 0.7 * Math.sin(5.2 * v - coefs.phase * 1.2) * Math.sin(4.1 * u);
+    
+    // Localized bumps and valleys
+    const bump1 = CONFIG.noiseScale * 0.5 * Math.exp(-2 * ((u - 0.5) * (u - 0.5) + (v - 0.3) * (v - 0.3)));
+    const bump2 = -CONFIG.noiseScale * 0.4 * Math.exp(-3 * ((u + 0.4) * (u + 0.4) + (v - 0.6) * (v - 0.6)));
+    
+    return bowl + ripple1 + ripple2 + wave1 + wave2 + bump1 + bump2;
   }
 
   function grad(x, z) {
@@ -236,17 +295,30 @@
   function updateSurface() {
     if (!CONFIG.showLossSurface) return;
     const pos = mesh.geometry.attributes.position;
+    const sketchyOffsets = mesh.geometry.userData.sketchyOffsets;
+    const originalPositions = mesh.geometry.userData.originalPositions;
+    
     for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const z = pos.getZ(i);
+      // Get original position
+      const origX = originalPositions[i * 3];
+      const origZ = originalPositions[i * 3 + 2];
+      
+      // Apply sketchy offset
+      const x = origX + sketchyOffsets[i * 3];
+      const z = origZ + sketchyOffsets[i * 3 + 2];
+      
+      // Update position with sketchy offset
+      pos.setX(i, x);
+      pos.setZ(i, z);
+      
+      // Calculate height based on distorted position
       pos.setY(i, f(x, z));
     }
     pos.needsUpdate = true;
     mesh.geometry.computeVertexNormals();
     
-    // Update wireframe
-    wireframe.geometry.dispose();
-    wireframe.geometry = new THREE.WireframeGeometry(mesh.geometry);
+    // Update custom wireframe vertices (shares position buffer with mesh)
+    wireframe.geometry.attributes.position.needsUpdate = true;
   }
 
   // ===== 2D FUNCTION PLOT =====
