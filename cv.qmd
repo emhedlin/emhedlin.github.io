@@ -1,0 +1,22 @@
+---
+title: "CV — Erik Hedlin"
+page-layout: full
+format:
+  html:
+    theme: none
+    css: styles.css
+    minimal: true
+---
+
+<!-- Full-viewport PDF embed with a download fallback -->
+<style>
+  .cv-wrap { height: 100vh; width: 100%; margin: 0; padding: 0; }
+  .cv-wrap object, .cv-wrap iframe { height: 100%; width: 100%; border: 0; }
+</style>
+
+<div class="cv-wrap">
+  <object data="hedlin_cv.pdf#view=FitH" type="application/pdf">
+    <p>Your browser can’t display PDFs inline.
+       <a href="hedlin_cv.pdf">Download the PDF</a>.</p>
+  </object>
+</div>

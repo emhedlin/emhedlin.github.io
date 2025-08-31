@@ -10,7 +10,7 @@ format:
 <div class="frame">
   <aside class="rail" aria-label="Primary">
     <div class="brand">
-      <a href="about.html" class="name" data-preview="images/about.jpg">erik hedlin</a>
+      <a href="cv-html.html" class="name" data-preview="images/about.jpg">erik hedlin</a>
       <!-- <div class="role">Data Scientist</div> -->
     </div>
 
@@ -18,10 +18,12 @@ format:
       <div class="menu-section">
         <!-- <h3 class="menu-heading">Information</h3> -->
         <ul>
-          <li><a href="posts/" data-preview="images/landscape.png">item 1</a></li>
+          <li><a href="index.html" style="font-weight: 600;">home</a></li>
+          <li><a href="cv-html.html">cv</a></li>
+          <!-- <li><a href="posts/" data-preview="images/landscape.png">item 1</a></li>
           <li><a href="about.html" data-preview="images/landscape2.png">item 2</a></li>
           <li><a href="archive.html" data-preview="images/archive.jpg">item 3</a></li>
-          <li><a href="photography.html" data-preview="images/photography.jpg">item 4</a></li>
+          <li><a href="photography.html" data-preview="images/photography.jpg">item 4</a></li> -->
         </ul>
       </div>
       

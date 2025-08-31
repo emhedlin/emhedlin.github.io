@@ -6,6 +6,7 @@ project:
     - preview.js
     - gradient_descent.html
     - images/
+    - hedlin_cv.pdf
 
 
 website:
