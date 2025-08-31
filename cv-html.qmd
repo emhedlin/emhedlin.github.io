@@ -13,14 +13,24 @@ format:
   <aside class="rail" aria-label="Primary">
     <div class="brand">
       <a href="index.html" class="name">erik hedlin</a>
+      <!-- <div class="role">Data Scientist</div> -->
+      <div style="margin-top: 8px;">
+        <a href="cv-html.html" style="font-size: 12px; color: #666; text-decoration: none; font-weight: 600;">cv</a>
+      </div>
     </div>
 
     <nav class="menu" aria-label="Navigation">
       <div class="menu-section">
+        <!-- <h3 class="menu-heading">Blog</h3> -->
         <ul>
-          <li><a href="index.html">home</a></li>
-          <li><a href="cv-html.html" style="font-weight: 600;">cv</a></li>
-          <!-- Add more menu items here if needed -->
+          <!-- <li><a href="posts/" data-preview="images/landscape.png">posts</a></li> -->
+        </ul>
+      </div>
+      
+      <div class="menu-section">
+        <!-- <h3 class="menu-heading">Archive</h3> -->
+        <ul class="secondary">
+          <!-- <li><a href="#">Photography</a></li> -->
         </ul>
       </div>
     </nav>
@@ -112,9 +122,9 @@ format:
   .cv-sec h2 {
     font-size: 14px;
     font-weight: 700;
-    color: #dc2626;
+    color: #bd3c49;
     margin: 0 0 10px 0;
-    border-bottom: 1px solid #dc2626;
+    border-bottom: 1px solid #bd3c49;
     padding-bottom: 2px;
   }
 
@@ -219,7 +229,7 @@ format:
 <div class="cv-container">
   <header class="cv-header">
     <div class="cv-name">Erik Hedlin</div>
-    <div class="cv-title">Senior Data Analyst - Strategy</div>
+    <div class="cv-title">Senior Data Scientist</div>
     <div class="cv-contacts">
       <a href="mailto:emhedlin@gmail.com">emhedlin@gmail.com</a> • 
       <a href="https://github.com/emhedlin">@emhedlin</a> • 
