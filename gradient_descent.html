@@ -13,6 +13,8 @@
       --trail: #bd3c49;
       --target: #000000;
       --approx: #df9da6;
+      --start-square: #bd3c49;
+      --end-square: #7a7a7a00;
     }
     html, body { 
       height: 100%; 
@@ -83,7 +85,7 @@
     noiseScale: 0.2,
     
     // Animation
-    cycleSeconds: 3,
+    cycleSeconds: 4,
     stepsPerCycle: 60,
     eta: 0.09,
     momentum: 0.5,
@@ -135,6 +137,9 @@
   
   // ===== 3D LOSS SURFACE =====
   let scene, renderer, camera, mesh, wireframe, dot, trail, trailGeom, trailPositions;
+  let startSquareIndex = -1;
+  let endSquareIndex = -1;
+  let squareMeshes = [];
   
   if (CONFIG.showLossSurface) {
     scene = new THREE.Scene();
@@ -191,6 +196,27 @@
     });
     mesh = new THREE.Mesh(geom, mat);
     scene.add(mesh);
+    
+    // Create individual square meshes for shading
+    const squareSize = CONFIG.size / segments;
+    const squareGeom = new THREE.PlaneGeometry(squareSize * 0.95, squareSize * 0.95); // Slightly smaller to avoid z-fighting
+    squareGeom.rotateX(-Math.PI/2);
+    
+    for (let j = 0; j < segments; j++) {
+      for (let i = 0; i < segments; i++) {
+        const squareMat = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--mesh').trim()),
+          transparent: true,
+          opacity: 0,
+          side: THREE.DoubleSide
+        });
+        const squareMesh = new THREE.Mesh(squareGeom.clone(), squareMat);
+        // Position will be set during animation
+        squareMesh.visible = false;
+        scene.add(squareMesh);
+        squareMeshes.push(squareMesh);
+      }
+    }
 
     // Custom wireframe with square grid (no diagonals)
     const wireGeom = new THREE.BufferGeometry();
@@ -289,6 +315,55 @@
     const fz1 = f(x, z + eps);
     const fz0 = f(x, z - eps);
     return { gx: (fx1 - fx0) / (2 * eps), gz: (fz1 - fz0) / (2 * eps) };
+  }
+  
+  // Get which square index a position is in
+  function getSquareIndex(x, z) {
+    if (!CONFIG.showLossSurface) return -1;
+    const segments = Math.floor(CONFIG.segments);
+    const halfSize = CONFIG.size / 2;
+    const squareSize = CONFIG.size / segments;
+    
+    // Convert world position to grid indices
+    const i = Math.floor((x + halfSize) / squareSize);
+    const j = Math.floor((z + halfSize) / squareSize);
+    
+    // Clamp to valid range
+    if (i < 0 || i >= segments || j < 0 || j >= segments) return -1;
+    
+    return j * segments + i;
+  }
+  
+  // Update square shading
+  function updateSquareShading(squareIndex, color, opacity) {
+    if (!CONFIG.showLossSurface || squareIndex < 0 || squareIndex >= squareMeshes.length) return;
+    
+    const segments = Math.floor(CONFIG.segments);
+    const halfSize = CONFIG.size / 2;
+    const squareSize = CONFIG.size / segments;
+    
+    const i = squareIndex % segments;
+    const j = Math.floor(squareIndex / segments);
+    
+    const squareMesh = squareMeshes[squareIndex];
+    
+    // Position the square overlay at the correct location
+    const centerX = -halfSize + (i + 0.5) * squareSize;
+    const centerZ = -halfSize + (j + 0.5) * squareSize;
+    const centerY = f(centerX, centerZ) + 0.01; // Higher above surface to ensure visibility
+    
+    squareMesh.position.set(centerX, centerY, centerZ);
+    squareMesh.material.color = new THREE.Color(color);
+    squareMesh.material.opacity = opacity;
+    squareMesh.visible = opacity > 0;
+  }
+  
+  // Clear all square shading
+  function clearSquareShading() {
+    squareMeshes.forEach(mesh => {
+      mesh.visible = false;
+      mesh.material.opacity = 0;
+    });
   }
 
   // Update surface
@@ -534,6 +609,14 @@
       approximations = [];
       generateTargetFunction();
       
+      // Clear previous shading and mark start square
+      clearSquareShading();
+      startSquareIndex = getSquareIndex(pos.x, pos.z);
+      updateSquareShading(startSquareIndex, 
+        getComputedStyle(document.documentElement).getPropertyValue('--start-square').trim(), 
+        0.6);
+      endSquareIndex = -1;
+      
       // Reset LOESS parameters
       loessParams = {
         span: 3.0 + Math.random() * 1.0,    // Start very oversmoothed
@@ -574,6 +657,8 @@
         approximations.shift();
       }
       
+      // End square marking removed - only showing start square
+      
       currentStep = step;
     }
     
@@ -581,6 +666,13 @@
     if (CONFIG.showLossSurface) {
       // coefs.phase = elapsed * 0.15;
       updateSurface();
+      
+      // Re-update shaded squares positions after surface update
+      if (startSquareIndex >= 0) {
+        updateSquareShading(startSquareIndex, 
+          getComputedStyle(document.documentElement).getPropertyValue('--start-square').trim(), 
+          0.6);
+      }
       
       // Update dot position
       const y = f(pos.x, pos.z);
