@@ -72,6 +72,13 @@ format:
     overflow-y: auto;
     height: 100vh;
   }
+  
+  @media (max-width: 768px) {
+    .cv-main {
+      padding: 0 !important;
+      background: #e0e0e0;
+    }
+  }
 
   /* Page + print */
   @page { size: 8.5in 11in; margin: 0.6in; }
@@ -238,12 +245,52 @@ format:
 
   /* Mobile responsiveness */
   @media (max-width: 768px) {
+    .cv-container {
+      max-width: 100% !important;
+      padding: 20px !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+    }
     .cv-content {
       grid-template-columns: 1fr;
       gap: 20px;
     }
-    .cv-name { font-size: 28px; }
-    .cv-title { font-size: 14px; }
+    .cv-header {
+      text-align: left;
+    }
+    .cv-name { 
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .cv-title { 
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .cv-columns {
+      grid-template-columns: 1fr !important;
+      gap: 24px;
+    }
+    .section-title {
+      font-size: 15px;
+      margin-top: 20px;
+      margin-bottom: 12px;
+    }
+    .job-title,
+    .degree-title,
+    .project-title {
+      font-size: 13px;
+    }
+    .job-company,
+    .degree-school {
+      font-size: 12px;
+    }
+    .job-desc,
+    .degree-desc,
+    .project-desc,
+    .summary-text {
+      font-size: 12px;
+      line-height: 1.5;
+    }
   }
 </style>
 
