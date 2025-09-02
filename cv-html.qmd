@@ -9,8 +9,29 @@ format:
 ---
 
 ```{=html}
-<div class="frame">
-  <aside class="rail" aria-label="Primary">
+<!-- Mobile header - only visible on small screens -->
+<header class="mobile-header" aria-label="Mobile navigation">
+  <a href="index.html" class="mobile-brand">erik hedlin</a>
+  <button class="hamburger" id="hamburger-btn" aria-controls="mobile-drawer" aria-expanded="false" aria-label="Open menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+</header>
+
+<!-- Off-canvas drawer for mobile -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+  <div class="drawer-header">
+    <button class="drawer-close" id="drawer-close" aria-label="Close menu">×</button>
+  </div>
+  <div class="drawer-content" id="drawer-content">
+    <!-- Menu content will be cloned here via JavaScript -->
+  </div>
+</div>
+
+<div class="frame cv-page">
+  <aside class="rail" aria-label="Primary" id="desktop-rail">
     <div class="brand">
       <a href="index.html" class="name">erik hedlin</a>
       <!-- <div class="role">Data Scientist</div> -->
@@ -353,4 +374,6 @@ format:
 </div>
   </main>
 </div>
+
+<script src="mobile-nav.js"></script>
 ```

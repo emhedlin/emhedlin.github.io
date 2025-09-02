@@ -206,25 +206,234 @@ main.content {
   z-index: 10;
 }
 
-/* Small screens: stack */
+/* Mobile header - hidden by default */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #e0e0e0;
+  border-bottom: 1px solid #d0d0d0;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+.mobile-brand {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+/* Hamburger button */
+.hamburger {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: #333;
+  transition: transform 0.2s ease;
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Drawer backdrop */
+.drawer-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-backdrop.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Mobile drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: #e0e0e0;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 300;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-drawer.open {
+  transform: translateX(0);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.drawer-close {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.drawer-content {
+  padding: 24px;
+}
+
+.drawer-content .brand {
+  margin-bottom: 32px;
+}
+
+.drawer-content .menu {
+  margin-top: 0;
+}
+
+/* Small screens: mobile layout */
 @media (max-width: 768px) {
-  .frame { 
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+  /* Show mobile header */
+  .mobile-header {
+    display: flex;
   }
   
+  /* Hide desktop rail */
   .rail {
-    border-right: none;
-    border-bottom: none;
-    padding: 24px;
+    display: none !important;
   }
   
+  /* Adjust frame for mobile */
+  .frame {
+    grid-template-columns: 1fr;
+    padding-top: 56px; /* Account for fixed header */
+    min-height: calc(100vh - 56px);
+  }
+  
+  /* Full width content */
   .preview {
-    min-height: 60vh;
+    min-height: calc(100vh - 56px);
+    padding: 0;
   }
   
-  .preview-img { 
-    width: 90%;
-    height: 400px;
+  .default-content {
+    padding: 20px;
+  }
+  
+  .gradient-viz {
+    height: calc(100vh - 56px);
+  }
+  
+  /* CV specific mobile styles */
+  .cv-page .cv-main {
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .cv-page .cv-container {
+    max-width: 100%;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  .cv-page .cv-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .cv-page .cv-columns {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .cv-page h1 {
+    font-size: 24px;
+  }
+  
+  .cv-page h2 {
+    font-size: 16px;
+  }
+  
+  .cv-page .section-title {
+    font-size: 14px;
+  }
+  
+  .cv-page .job-title,
+  .cv-page .degree-title {
+    font-size: 13px;
+  }
+  
+  .cv-page .job-company,
+  .cv-page .degree-school {
+    font-size: 12px;
+  }
+  
+  .cv-page .job-desc,
+  .cv-page .degree-desc,
+  .cv-page .project-desc {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .rail {
+    width: 200px;
+    padding: 24px 16px;
+  }
+  
+  .frame {
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .cv-page .cv-container {
+    max-width: 100%;
+    padding: 30px;
   }
 }

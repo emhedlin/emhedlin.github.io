@@ -8,13 +8,14 @@
     :root{ 
       --bg: transparent;
       --mesh: #f0f0f0;
+      --mesh-high: #c7c7c7;  /* Darker color for high regions */
+      --mesh-low: #d1d1d1;   /* Lighter color for low regions */
       --edges: #bbbbbb;
       --dot: #bd3c49;
       --trail: #bd3c49;
       --target: #000000;
       --approx: #df9da6;
       --start-square: #bd3c49;
-      --end-square: #7a7a7a00;
     }
     html, body { 
       height: 100%; 
@@ -72,8 +73,8 @@
     showFunction: false,     // Show 2D function plot
     
     // 3D Surface - Low poly
-    size: 3,
-    segments: 90, // Low poly
+    size: 2.5,
+    segments: 60, // Low poly
     bowlX: 0.8,
     bowlZ: 1.2,
     coupling: 0.4,
@@ -86,7 +87,7 @@
     
     // Animation
     cycleSeconds: 4,
-    stepsPerCycle: 60,
+    stepsPerCycle: 90,
     eta: 0.09,
     momentum: 0.5,
     
@@ -187,11 +188,10 @@
     geom.userData.sketchyOffsets = sketchyOffsets;
     geom.userData.originalPositions = pos.array.slice();
 
-    // Flat shaded material for low poly look
+    // Flat shaded material - transparent surface
     const mat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--mesh').trim()),
       transparent: true,
-      opacity: CONFIG.meshOpacity,
+      opacity: 0,  // Completely transparent - only for hit detection if needed
       side: THREE.DoubleSide
     });
     mesh = new THREE.Mesh(geom, mat);
@@ -245,8 +245,12 @@
     wireGeom.setAttribute('position', geom.getAttribute('position'));
     wireGeom.setIndex(wireIndices);
     
+    // Add vertex colors attribute for wireframe
+    const wireColors = new Float32Array(pos.count * 3);
+    wireGeom.setAttribute('color', new THREE.BufferAttribute(wireColors, 3));
+    
     const wireMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--edges').trim()),
+      vertexColors: true,  // Use vertex colors for height-based gradient
       linewidth: CONFIG.edgeWidth
     });
     wireframe = new THREE.LineSegments(wireGeom, wireMat);
@@ -370,26 +374,51 @@
   function updateSurface() {
     if (!CONFIG.showLossSurface) return;
     const pos = mesh.geometry.attributes.position;
+    const wireColors = wireframe.geometry.attributes.color;
     const sketchyOffsets = mesh.geometry.userData.sketchyOffsets;
     const originalPositions = mesh.geometry.userData.originalPositions;
     
+    // Get color values from CSS
+    const highColor = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--mesh-high').trim());
+    const lowColor = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--mesh-low').trim());
+    
+    // Find height range for normalization
+    let minY = Infinity, maxY = -Infinity;
+    
+    // First pass: calculate positions and find min/max heights
     for (let i = 0; i < pos.count; i++) {
-      // Get original position
       const origX = originalPositions[i * 3];
       const origZ = originalPositions[i * 3 + 2];
-      
-      // Apply sketchy offset
       const x = origX + sketchyOffsets[i * 3];
       const z = origZ + sketchyOffsets[i * 3 + 2];
+      const y = f(x, z);
       
-      // Update position with sketchy offset
       pos.setX(i, x);
+      pos.setY(i, y);
       pos.setZ(i, z);
       
-      // Calculate height based on distorted position
-      pos.setY(i, f(x, z));
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y);
     }
+    
+    // Second pass: set colors on wireframe based on normalized height
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      
+      // Normalize height to 0-1 range (0 = low, 1 = high)
+      const heightNorm = (y - minY) / (maxY - minY);
+      
+      // Interpolate between low and high colors
+      const color = new THREE.Color();
+      color.r = lowColor.r + (highColor.r - lowColor.r) * heightNorm;
+      color.g = lowColor.g + (highColor.g - lowColor.g) * heightNorm;
+      color.b = lowColor.b + (highColor.b - lowColor.b) * heightNorm;
+      
+      wireColors.setXYZ(i, color.r, color.g, color.b);
+    }
+    
     pos.needsUpdate = true;
+    wireColors.needsUpdate = true;
     mesh.geometry.computeVertexNormals();
     
     // Update custom wireframe vertices (shares position buffer with mesh)
