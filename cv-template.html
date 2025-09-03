@@ -84,6 +84,9 @@
         <div class="main-content">
           <section class="cv-sec">
             <h2>Experience</h2>
+            <div style="text-align: left; margin-bottom: 10px;">
+              <button id="toggle-all" style="font-size: 11px; padding: 2px 8px; background: #f0f0f000; border: 0px solid #cccccc00; cursor: pointer; border-radius: 0px; color: #666;">Expand All</button>
+            </div>
 
             $for(jobs)$
             <div class="job-entry">
@@ -97,7 +100,15 @@
               $if(it.description)$
               <ul class="job-bullets">
                 $for(it.description)$
-                <li>$it$</li>
+                <li class="job-bullet-item">
+                  <div class="bullet-header">
+                    <span class="bullet-toggle">›</span>
+                    <span class="bullet-label">$it.label$</span>
+                  </div>
+                  <div class="bullet-content">
+                    $it.text$
+                  </div>
+                </li>
                 $endfor$
               </ul>
               $endif$
@@ -168,6 +179,66 @@ $include-after-body$
 $endfor$
 
 <script src="mobile-nav.js"></script>
+
+<script>
+// Expandable CV bullets - optimized with single toggle
+(function() {
+  let allExpanded = false;
+  
+  // Use event delegation for better performance
+  document.addEventListener('click', function(e) {
+    // Handle bullet header clicks
+    if (e.target.closest('.bullet-header')) {
+      const header = e.target.closest('.bullet-header');
+      const toggle = header.querySelector('.bullet-toggle');
+      const content = header.nextElementSibling;
+      
+      toggle.classList.toggle('expanded');
+      content.classList.toggle('expanded');
+      
+      // Update button text based on current state
+      updateToggleButton();
+    }
+    
+    // Handle toggle all button
+    if (e.target.id === 'toggle-all') {
+      const toggles = document.querySelectorAll('.bullet-toggle');
+      const contents = document.querySelectorAll('.bullet-content');
+      
+      if (!allExpanded) {
+        // Expand all
+        toggles.forEach(el => el.classList.add('expanded'));
+        contents.forEach(el => el.classList.add('expanded'));
+        e.target.textContent = 'Collapse All';
+        allExpanded = true;
+      } else {
+        // Collapse all
+        toggles.forEach(el => el.classList.remove('expanded'));
+        contents.forEach(el => el.classList.remove('expanded'));
+        e.target.textContent = 'Expand All';
+        allExpanded = false;
+      }
+    }
+  });
+  
+  // Update toggle button text based on current state
+  function updateToggleButton() {
+    const button = document.getElementById('toggle-all');
+    if (!button) return;
+    
+    const expandedCount = document.querySelectorAll('.bullet-content.expanded').length;
+    const totalCount = document.querySelectorAll('.bullet-content').length;
+    
+    if (expandedCount === totalCount && totalCount > 0) {
+      button.textContent = 'Collapse All';
+      allExpanded = true;
+    } else if (expandedCount === 0) {
+      button.textContent = 'Expand All';
+      allExpanded = false;
+    }
+  }
+})();
+</script>
 
 </body>
 </html>

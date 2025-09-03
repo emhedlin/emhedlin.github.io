@@ -27,10 +27,14 @@ jobs:
       name: ""
       link: ""
     description:
-      - "Experimentation by design: Designed and put a Bayesian A/B testing framework into production. The framework has powered all product experiments (data transformation/ingestion, analysis via. conjugate priors, and result exports at various granularities) for two years."
-      - "Advanced Analytics & Causal Inference: Various causal inference projects (basic dag informed regression, Diff in Diff, Double ML, and BARTs) to derive actionable insights and optimize policy decisions when RCTs were unavailable."
-      - "Data Democratization & Tools: Built internal Python libraries for colleagues to increase efficiency of accessing and visualizing data (visualization tools and credential handling tools for AWS)."
-      - "Collaboration & Leadership: Directly partnered with executive leadership on broad initiatives including price optimization and customer segmentation, and checkout policies (shipping promise). "
+      - label: "Experimentation by design"
+        text: "Designed and put a Bayesian A/B testing framework into production. The framework has powered all product experiments (data transformation/ingestion, analysis via. conjugate priors, and result exports at various granularities) for two years."
+      - label: "Advanced Analytics & Causal Inference"
+        text: "Various causal inference projects (basic dag informed regression, Diff in Diff, Double ML, and BARTs) to derive actionable insights and optimize policy decisions when RCTs were unavailable."
+      - label: "Data Democratization & Tools"
+        text: "Built internal Python libraries for colleagues to increase efficiency of accessing and visualizing data (visualization tools and credential handling tools for AWS)."
+      - label: "Collaboration & Leadership"
+        text: "Directly partnered with executive leadership on broad initiatives including price optimization and customer segmentation, and checkout policies (shipping promise)."
     from: "2022 Dec."
     to: "present"
     tags:
@@ -49,8 +53,10 @@ jobs:
       name: ""
       link: ""
     description:
-      - "Quantitative Solutions: Designed and deployed GUI computer vision applications on single board computers to support field research programs in the Canadian Arctic."
-      - "Cross-Functional Collaboration: Worked with academic and industry partners to build data collection policies and quantitative frameworks to better understand sources of variation in complex ecosystems."
+      - label: "Quantitative Solutions"
+        text: "Designed and deployed GUI computer vision applications on single board computers to support field research programs in the Canadian Arctic."
+      - label: "Cross-Functional Collaboration"
+        text: "Worked with academic and industry partners to build data collection policies and quantitative frameworks to better understand sources of variation in complex ecosystems."
     from: "2020 Jan."
     to: "present"
     tags:
@@ -68,9 +74,12 @@ jobs:
       name: ""
       link: ""
     description:
-      - "Scalable Analytics & SQL Expertise: Embedded in a product team to support experimentation, data pipeline creation (DBT), and research initiatives to inform roadmaps."
-      - "Experimentation: Designed and analyzed online experiments to support product improvement roadmaps."
-      - "Team Mentorship: Mentored analysts in best practices for data engineering and statistical analysis, including developing python and R libraries to increase efficiency in connecting to data sources."
+      - label: "Scalable Analytics & SQL Expertise"
+        text: "Embedded in a product team to support experimentation, data pipeline creation (DBT), and research initiatives to inform roadmaps."
+      - label: "Experimentation"
+        text: "Designed and analyzed online experiments to support product improvement roadmaps."
+      - label: "Team Mentorship"
+        text: "Mentored analysts in best practices for data engineering and statistical analysis, including developing python and R libraries to increase efficiency in connecting to data sources."
     from: "2021 Nov."
     to: "2022 Dec."
     tags:
@@ -89,8 +98,10 @@ jobs:
       name: ""
       link: ""
     description:
-      - "Experimentation Design: Designed data collection policies to support research and analyses such as applied advanced regression, hierarchical modeling, and time series analysis in R and Python."
-      - "Data Engineering & Collaboration: Designed and maintained local data warehouse to support academic stakeholders, and collaborated with stakeholders on statistical analysis."
+      - label: "Experimentation Design"
+        text: "Designed data collection policies to support research and analyses such as applied advanced regression, hierarchical modeling, and time series analysis in R and Python."
+      - label: "Data Engineering & Collaboration"
+        text: "Designed and maintained local data warehouse to support academic stakeholders, and collaborated with stakeholders on statistical analysis."
     from: "2018 Jun."
     to: "2021 Nov."
     tags:

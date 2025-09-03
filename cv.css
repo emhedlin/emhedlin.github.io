@@ -119,13 +119,61 @@
 }
 .job-bullets {
   margin: 6px 0 0 0;
-  padding-left: 14px;
+  padding-left: 0;
+  list-style: none;
 }
-.job-bullets li {
+.job-bullet-item {
+  margin: 4px 0;
+}
+.bullet-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 2px 0;
+  user-select: none;
+}
+.bullet-header:hover {
+  background: rgba(168, 168, 168, 0.1);  /* Light gray hover instead of red */
+  margin-left: -4px;
+  padding-left: 4px;
+  margin-right: -4px;
+  padding-right: 4px;
+  border-radius: 2px;
+}
+.bullet-toggle {
+  font-size: 14px;
+  font-weight: 600;
+  /* color: #bd3c49; */
+  color: #a8a8a8;
+  margin-right: 6px;
+  display: inline-block;
+  width: 12px;
+  transition: transform 0.2s ease;
+  transform-origin: center;
+}
+.bullet-toggle.expanded {
+  transform: rotate(90deg);
+}
+.bullet-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #000;
+}
+.bullet-content {
   font-size: 12px;
   line-height: 1.4;
-  margin: 3px 0;
   color: #333;
+  padding-left: 18px;
+  margin-top: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: height 0.2s ease, margin-top 0.2s ease, opacity 0.2s ease;
+}
+.bullet-content.expanded {
+  height: auto;
+  margin-top: 4px;
+  opacity: 1;
 }
 
 /* === Sidebar === */
