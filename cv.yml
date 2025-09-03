@@ -1,0 +1,192 @@
+contacts:
+  name: Erik Hedlin
+  title: Data Scientist
+  email: emhedlin@gmail.com
+  address: "Toronto, Ontario"
+  location: Canada
+  phone: "+1-780-919-2715"
+  linkedin:
+    url: https://www.linkedin.com/in/erik-hedlin-47626189/
+    displayText: erikhedlin
+  github:
+    url: https://github.com/emhedlin
+    displayText: "@emhedlin"
+  website:
+    url: ""
+    displayText: ""
+
+position: Senior Data Analyst - Strategy
+tagline: Data Scientist with over 7 years of experience in quantitative roles at SaaS, ecommerce, and research organizations. Five years of experience both designing individual experiments, and designing/building company wide experimentation frameworks. Seven years of experience developing advanced and interpretable statistical and ML models, and working with business stakeholders to identify causal relationships and optimize processes.
+
+jobs:
+  - position: Senior Data Analyst - Corporate Planning / Product
+    company:
+      name: SSENSE
+      link: ""
+    product:
+      name: ""
+      link: ""
+    description:
+      - "Experimentation by design: Designed and put a Bayesian A/B testing framework into production. The framework has powered all product experiments (data transformation/ingestion, analysis via. conjugate priors, and result exports at various granularities) for two years."
+      - "Advanced Analytics & Causal Inference: Various causal inference projects (basic dag informed regression, Diff in Diff, Double ML, and BARTs) to derive actionable insights and optimize policy decisions when RCTs were unavailable."
+      - "Data Democratization & Tools: Built internal Python libraries for colleagues to increase efficiency of accessing and visualizing data (visualization tools and credential handling tools for AWS)."
+      - "Collaboration & Leadership: Directly partnered with executive leadership on broad initiatives including price optimization and customer segmentation, and checkout policies (shipping promise). "
+    from: "2022 Dec."
+    to: "present"
+    tags:
+      - Bayesian A/B Testing
+      - Causal Inference
+      - Python
+      - AWS
+      - Data Visualization
+    location: Toronto, Canada
+
+  - position: Co-founder & Quantitative Consultant
+    company:
+      name: Signal Analytics
+      link: ""
+    product:
+      name: ""
+      link: ""
+    description:
+      - "Quantitative Solutions: Designed and deployed GUI computer vision applications on single board computers to support field research programs in the Canadian Arctic."
+      - "Cross-Functional Collaboration: Worked with academic and industry partners to build data collection policies and quantitative frameworks to better understand sources of variation in complex ecosystems."
+    from: "2020 Jan."
+    to: "present"
+    tags:
+      - Computer Vision
+      - Quantitative Analysis
+      - Python
+      - Field Research
+    location: Toronto, Canada
+
+  - position: Senior Data Analyst
+    company:
+      name: 7Shifts
+      link: ""
+    product:
+      name: ""
+      link: ""
+    description:
+      - "Scalable Analytics & SQL Expertise: Embedded in a product team to support experimentation, data pipeline creation (DBT), and research initiatives to inform roadmaps."
+      - "Experimentation: Designed and analyzed online experiments to support product improvement roadmaps."
+      - "Team Mentorship: Mentored analysts in best practices for data engineering and statistical analysis, including developing python and R libraries to increase efficiency in connecting to data sources."
+    from: "2021 Nov."
+    to: "2022 Dec."
+    tags:
+      - DBT
+      - Experimentation
+      - SQL
+      - Python
+      - R
+    location: Toronto, Canada
+
+  - position: Research Associate
+    company:
+      name: Nunavut Wildlife Cooperative Research Unit
+      link: ""
+    product:
+      name: ""
+      link: ""
+    description:
+      - "Experimentation Design: Designed data collection policies to support research and analyses such as applied advanced regression, hierarchical modeling, and time series analysis in R and Python."
+      - "Data Engineering & Collaboration: Designed and maintained local data warehouse to support academic stakeholders, and collaborated with stakeholders on statistical analysis."
+    from: "2018 Jun."
+    to: "2021 Nov."
+    tags:
+      - Statistical Modeling
+      - R
+      - Python
+      - Data Engineering
+    location: Edmonton, Canada
+
+objective: Seeking opportunities to leverage my expertise in experimentation, causal inference, and data science to drive data-informed decision making and business impact.
+
+education:
+  - place:
+      name: University of Alberta
+      link: ""
+    degree: "M.Sc"
+    major: Ecological Sciences
+    track: Ecological Sciences
+    from: "2013"
+    to: "2016"
+    location: Edmonton, Canada
+  - place:
+      name: University of Saskatchewan
+      link: ""
+    degree: "B.Sc"
+    major: Biology
+    track: Biology
+    from: "2009"
+    to: "2013"
+    location: Saskatoon, Canada
+
+technical_expertise:
+  - name: Python
+    level: 5
+  - name: R
+    level: 5
+  - name: SQL
+    level: 5
+  - name: Bayesian Inference
+    level: 5
+  - name: Causal Inference
+    level: 5
+  - name: A/B Testing
+    level: 5
+
+skills:
+  - Python (polars, pymc, nixtla, sklearn, pandas, statsmodels, DoWhy, EconML)
+  - R (brms, stan, lme4, nlme, tidyverse)
+  - SQL
+  - Bash
+  - Git
+  - AWS
+  - BigQuery
+  - Bayesian Inference
+  - Regression
+  - Causal Inference
+  - A/B Testing
+  - ETL Pipelines
+  - Data Engineering
+  - DBT
+  - CUPED
+  - Double ML
+  - BARTs
+
+methodology:
+  - Bayesian Inference
+  - Causal Inference
+  - A/B Testing
+  - Experimentation Design
+  - Statistical Modeling
+  - Hierarchical Modeling
+  - Time Series Analysis
+  - Variance Reduction Methods
+
+tools:
+  - Git
+  - AWS
+  - BigQuery
+  - DBT
+  - Nixtla
+  - polars
+  - pymc
+  - sklearn
+  - statsmodels
+  - DoWhy
+  - EconML
+  - brms  
+  - stan
+  - lme4 + nlme
+
+achievements:
+  - name: "Demand Forecasting System"
+    description: Developed a scalable demand forecasting network using Nixtla and polars to support labour planning and logistics.
+  - name: "Customer Behavior Analysis"
+    description: Leveraged causal inference methodologies (DAG-based regression, double ML) to analyze customer behavior and optimize checkout experiences and shipping logistics.
+  - name: "Interpretable Hierarchical Modeling"
+    description: Implemented generalized hierarchical regression models to explore complex patterns in ecosystem data.
+  - name: "Published Research"
+    description: Co-authored multiple peer-reviewed publications in Behavioural Ecology on Arctic wildlife research using advanced statistical methods.

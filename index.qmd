@@ -34,7 +34,7 @@ format:
       <a href="index.html" class="name" data-preview="images/about.jpg">erik hedlin</a>
       <!-- <div class="role">Data Scientist</div> -->
       <div style="margin-top: 8px;">
-        <a href="cv-html.html" style="font-size: 12px; color: #666; text-decoration: none;">cv</a>
+        <a href="cv.html" style="font-size: 12px; color: #666; text-decoration: none;">cv</a>
       </div>
     </div>
 

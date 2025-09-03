@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$if(title)$$title$$else$CV — $contacts.name$$endif$</title>
+
+  $for(header-includes)$
+  $header-includes$
+  $endfor$
+
+  $if(css)$
+  $for(css)$
+  <link rel="stylesheet" href="$css$" />
+  $endfor$
+  $endif$
+</head>
+<body>
+
+<!-- Mobile header - only visible on small screens -->
+<header class="mobile-header" aria-label="Mobile navigation">
+  <a href="index.html" class="mobile-brand">$contacts.name$</a>
+  <button class="hamburger" id="hamburger-btn" aria-controls="mobile-drawer" aria-expanded="false" aria-label="Open menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+</header>
+
+<!-- Off-canvas drawer for mobile -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+  <div class="drawer-header">
+    <button class="drawer-close" id="drawer-close" aria-label="Close menu">×</button>
+  </div>
+  <div class="drawer-content" id="drawer-content"></div>
+</div>
+
+<div class="frame cv-page">
+  <aside class="rail" aria-label="Primary" id="desktop-rail">
+    <div class="brand">
+      <a href="index.html" class="name">$contacts.name$</a>
+      <div style="margin-top: 8px;">
+        <a href="cv.html" style="font-size: 12px; color: #666; text-decoration: none; font-weight: 600;">cv</a>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Navigation">
+      <div class="menu-section">
+        <ul></ul>
+      </div>
+      <div class="menu-section">
+        <ul class="secondary"></ul>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="cv-main">
+    <div class="cv-container">
+      <!-- Header -->
+      <header class="cv-header">
+        <div class="cv-name">$contacts.name$</div>
+        <div class="cv-title">
+          $if(contacts.title)$$contacts.title$$elseif(position)$$position$$else$Data Scientist$endif$
+        </div>
+        <div class="cv-contacts">
+          $if(contacts.email)$<a href="mailto:$contacts.email$">$contacts.email$</a>$endif$
+          $if(contacts.github.url)$ • <a href="$contacts.github.url$">$contacts.github.displayText$</a>$endif$
+          $if(contacts.linkedin.url)$ • <a href="$contacts.linkedin.url$">$contacts.linkedin.displayText$</a>$endif$
+          $if(contacts.website.url)$ • <a href="$contacts.website.url$">$contacts.website.displayText$</a>$endif$
+          $if(contacts.address)$ • $contacts.address$$endif$
+        </div>
+      </header>
+
+      <!-- Tagline -->
+      $if(tagline)$
+      <div class="cv-tagline">
+        $tagline$
+      </div>
+      $endif$
+
+      <div class="cv-content">
+        <!-- Left column: Experience -->
+        <div class="main-content">
+          <section class="cv-sec">
+            <h2>Experience</h2>
+
+            $for(jobs)$
+            <div class="job-entry">
+              <div class="job-title">$it.position$</div>
+              <div class="job-company">
+                $if(it.company.link)$<a href="$it.company.link$">$it.company.name$</a>$else$$it.company.name$$endif$
+              </div>
+              <div class="job-period">
+                $if(it.from)$$it.from$$endif$ — $if(it.to)$$it.to$$endif$,$if(it.location)$ $it.location$$endif$
+              </div>
+              $if(it.description)$
+              <ul class="job-bullets">
+                $for(it.description)$
+                <li>$it$</li>
+                $endfor$
+              </ul>
+              $endif$
+            </div>
+            $endfor$
+          </section>
+        </div>
+
+        <!-- Right column: Objective, Education, Skills, Publications -->
+        <div class="sidebar">
+          $if(objective)$
+          <section class="cv-sec">
+            <h2>Objective</h2>
+            <p>$objective$</p>
+          </section>
+          $endif$
+
+          $if(education)$
+          <section class="cv-sec">
+            <h2>Education</h2>
+            $for(education)$
+            <div class="edu-entry">
+              <div class="edu-school">
+                $if(it.place.link)$<a href="$it.place.link$">$it.place.name$</a>$else$$it.place.name$$endif$
+              </div>
+              <div class="edu-period">
+                $if(it.from)$$it.from$$endif$ - $if(it.to)$$it.to$$endif$,$if(it.location)$ $it.location$$endif$
+              </div>
+              <div class="edu-degree">
+                $if(it.degree)$$it.degree$$endif$$if(it.major)$ in $it.major$$endif$
+              </div>
+            </div>
+            $endfor$
+          </section>
+          $endif$
+
+          $if(skills)$
+          <section class="cv-sec">
+            <h2>Skills/Exposure</h2>
+            <ul>
+              $for(skills)$
+              <li>$it$</li>
+              $endfor$
+            </ul>
+          </section>
+          $endif$
+
+          $if(achievements)$
+          <section class="cv-sec">
+            <h2>Publications</h2>
+            $for(achievements)$
+            <div class="project-entry">
+              <div class="project-title">$it.name$</div>
+              <div class="project-desc">$it.description$</div>
+            </div>
+            $endfor$
+          </section>
+          $endif$
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Quarto/Pandoc will insert include-after-body here -->
+$for(include-after-body)$
+$include-after-body$
+$endfor$
+
+<script src="mobile-nav.js"></script>
+
+</body>
+</html>

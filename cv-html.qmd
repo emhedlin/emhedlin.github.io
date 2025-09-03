@@ -64,6 +64,7 @@ format:
     display: grid;
     grid-template-columns: 260px 1fr;
     min-height: 100vh;
+    width: 100%;
     background: #e0e0e0;
   }
 
@@ -74,8 +75,14 @@ format:
   }
   
   @media (max-width: 768px) {
+    .frame {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+    }
     .cv-main {
       padding: 0 !important;
+      width: 100%;
       background: #e0e0e0;
     }
   }
@@ -243,17 +250,47 @@ format:
     color: #333;
   }
 
+  /* Small desktop - slightly wider than default */
+  @media (min-width: 1025px) and (max-width: 1200px) {
+    .cv-container {
+      max-width: 85%;
+      max-width: min(900px, 85%);
+    }
+  }
+
+  /* Tablet responsiveness - between mobile and desktop */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .cv-container {
+      max-width: 90%;
+      padding: 40px;
+    }
+    .cv-columns {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .cv-container {
       max-width: 100% !important;
+      width: 100% !important;
       padding: 20px !important;
       margin: 0 !important;
       box-shadow: none !important;
     }
     .cv-content {
-      grid-template-columns: 1fr;
-      gap: 20px;
+      display: block !important;
+      width: 100% !important;
+    }
+    .cv-content > div {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-bottom: 20px;
+    }
+    .main-content,
+    .sidebar-content {
+      width: 100% !important;
     }
     .cv-header {
       text-align: left;
