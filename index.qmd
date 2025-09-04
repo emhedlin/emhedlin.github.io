@@ -41,9 +41,9 @@ format:
     <nav class="menu" aria-label="Navigation">
       <div class="menu-section">
         <!-- <h3 class="menu-heading">Blog</h3> -->
-        <ul>
+        <!-- <ul>
           <li><a href="posts/" data-preview="images/landscape.png">posts</a></li>
-        </ul>
+        </ul> -->
       </div>
       
       <div class="menu-section">

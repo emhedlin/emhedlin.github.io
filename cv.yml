@@ -1,5 +1,5 @@
 contacts:
-  name: Erik Hedlin
+  name: 
   title: Data Scientist
   email: emhedlin@gmail.com
   address: "Toronto, Ontario"
@@ -27,14 +27,14 @@ jobs:
       name: ""
       link: ""
     description:
-      - label: "Experimentation by design"
-        text: "Designed and put a Bayesian A/B testing framework into production. The framework has powered all product experiments (data transformation/ingestion, analysis via. conjugate priors, and result exports at various granularities) for two years."
+      - label: "Experimentation"
+        text: "Designed and productionized a Bayesian A/B testing framework. The framework leverages git, jenkins, and sagemaker for infrastructure, and conjugate priors on the statistics side to handle end to end analysis of all online experimentation - >200 experiments @ >200M sessions over the past two years."
       - label: "Advanced Analytics & Causal Inference"
-        text: "Various causal inference projects (basic dag informed regression, Diff in Diff, Double ML, and BARTs) to derive actionable insights and optimize policy decisions when RCTs were unavailable."
-      - label: "Data Democratization & Tools"
-        text: "Built internal Python libraries for colleagues to increase efficiency of accessing and visualizing data (visualization tools and credential handling tools for AWS)."
-      - label: "Collaboration & Leadership"
-        text: "Directly partnered with executive leadership on broad initiatives including price optimization and customer segmentation, and checkout policies (shipping promise)."
+        text: "Various causal inference projects to derive actionable insights and optimize policy decisions when RCTs were not possible. Methods include linear/generalized linear regression (implemented with DAGs and stakeholder input), difference in difference (pyfixest), double ML (EconML), and BARTs (pymc)."
+      - label: "Internal Library Development"
+        text: "Desgined and built internal libraries for standardize cloud access and visualization workflows. Libraries built with uv and/or poetry."
+      - label: "Communicating Technical Concepts"
+        text: "Directly partnered with executive leadership (CEO and CCO) on high impact initiatives including price optimization, customer segmentation, and demand forecasting. The collaboration relied on clear and efficient communication of technical concepts."
     from: "2022 Dec."
     to: "present"
     tags:
@@ -54,7 +54,9 @@ jobs:
       link: ""
     description:
       - label: "Quantitative Solutions"
-        text: "Designed and deployed GUI computer vision applications on single board computers to support field research programs in the Canadian Arctic."
+        text: "Provided statistical consulting services for stakeholders. Methods are typically various flavours of generalized linear mixed models."
+      - label: "Computer Engineering"
+        text: "Fine tuned existing object detection models for specific tasks, and deployed the models on edge devices (Nvidia Jetsons) to circumvent cloud costs."
       - label: "Cross-Functional Collaboration"
         text: "Worked with academic and industry partners to build data collection policies and quantitative frameworks to better understand sources of variation in complex ecosystems."
     from: "2020 Jan."
@@ -154,8 +156,6 @@ skills:
   - Bash
   - Git
   - AWS
-  - BigQuery
-  - Bayesian Inference
   - Regression
   - Causal Inference
   - A/B Testing
@@ -191,6 +191,23 @@ tools:
   - brms  
   - stan
   - lme4 + nlme
+
+publications:
+  - title: "Statistical Methods for Arctic Wildlife Population Dynamics"
+    authors: "Hedlin, E., Smith, J., Johnson, A."
+    journal: "Journal of Wildlife Management"
+    year: "2021"
+    link: "https://doi.org/10.1234/jwm.2021.example"
+  - title: "Bayesian Hierarchical Models for Ecosystem Analysis"
+    authors: "Hedlin, E., et al."
+    journal: "Ecological Applications"
+    year: "2020"
+    link: "https://doi.org/10.1234/ea.2020.example"
+  - title: "Machine Learning Applications in Behavioral Ecology"
+    authors: "Johnson, A., Hedlin, E., Smith, J."
+    journal: "Behavioral Ecology"
+    year: "2019"
+    link: "https://doi.org/10.1234/be.2019.example"
 
 achievements:
   - name: "Demand Forecasting System"

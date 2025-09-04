@@ -64,11 +64,29 @@
           $if(contacts.title)$$contacts.title$$elseif(position)$$position$$else$Data Scientist$endif$
         </div>
         <div class="cv-contacts">
-          $if(contacts.email)$<a href="mailto:$contacts.email$">$contacts.email$</a>$endif$
-          $if(contacts.github.url)$ • <a href="$contacts.github.url$">$contacts.github.displayText$</a>$endif$
-          $if(contacts.linkedin.url)$ • <a href="$contacts.linkedin.url$">$contacts.linkedin.displayText$</a>$endif$
-          $if(contacts.website.url)$ • <a href="$contacts.website.url$">$contacts.website.displayText$</a>$endif$
-          $if(contacts.address)$ • $contacts.address$$endif$
+          $if(contacts.email)$
+          <a href="mailto:$contacts.email$" class="contact-icon" title="$contacts.email$">
+            <img src="icons/gmail-svgrepo-com.svg" alt="Email" style="width: 16px; height: 16px; vertical-align: middle;">
+          </a>
+          $endif$
+          $if(contacts.github.url)$
+          <a href="$contacts.github.url$" class="contact-icon" title="GitHub">
+            <img src="icons/github-142-svgrepo-com.svg" alt="GitHub" style="width: 16px; height: 16px; vertical-align: middle;">
+          </a>
+          $endif$
+          $if(contacts.linkedin.url)$
+          <a href="$contacts.linkedin.url$" class="contact-icon" title="LinkedIn">
+            <img src="icons/linkedin-svgrepo-com.svg" alt="LinkedIn" style="width: 16px; height: 16px; vertical-align: middle;">
+          </a>
+          $endif$
+          $if(contacts.website.url)$
+          <a href="$contacts.website.url$" class="contact-icon" title="Website">
+            <img src="icons/website-ui-web-svgrepo-com.svg" alt="Website" style="width: 16px; height: 16px; vertical-align: middle;">
+          </a>
+          $endif$
+          $if(contacts.address)$
+          <span style="margin-left: 12px;">$contacts.address$</span>
+          $endif$
         </div>
       </header>
 
@@ -115,16 +133,31 @@
             </div>
             $endfor$
           </section>
+
+          $if(publications)$
+          <section class="cv-sec">
+            <h2>Publications</h2>
+            $for(publications)$
+            <div class="publication-entry">
+              <div class="publication-title">$it.title$</div>
+              $if(it.authors)$<div class="publication-authors">$it.authors$</div>$endif$
+              $if(it.journal)$<div class="publication-journal">$it.journal$</div>$endif$
+              $if(it.year)$<div class="publication-year">$it.year$</div>$endif$
+              $if(it.link)$<div class="publication-link"><a href="$it.link$" target="_blank">View Publication</a></div>$endif$
+            </div>
+            $endfor$
+          </section>
+          $endif$
         </div>
 
         <!-- Right column: Objective, Education, Skills, Publications -->
         <div class="sidebar">
-          $if(objective)$
+          <!-- $if(objective)$
           <section class="cv-sec">
             <h2>Objective</h2>
             <p>$objective$</p>
           </section>
-          $endif$
+          $endif$ -->
 
           $if(education)$
           <section class="cv-sec">
@@ -158,7 +191,7 @@
 
           $if(achievements)$
           <section class="cv-sec">
-            <h2>Publications</h2>
+            <h2>Projects</h2>
             $for(achievements)$
             <div class="project-entry">
               <div class="project-title">$it.name$</div>
@@ -193,6 +226,7 @@ $endfor$
       const toggle = header.querySelector('.bullet-toggle');
       const content = header.nextElementSibling;
       
+      header.classList.toggle('expanded');
       toggle.classList.toggle('expanded');
       content.classList.toggle('expanded');
       
@@ -202,17 +236,20 @@ $endfor$
     
     // Handle toggle all button
     if (e.target.id === 'toggle-all') {
+      const headers = document.querySelectorAll('.bullet-header');
       const toggles = document.querySelectorAll('.bullet-toggle');
       const contents = document.querySelectorAll('.bullet-content');
       
       if (!allExpanded) {
         // Expand all
+        headers.forEach(el => el.classList.add('expanded'));
         toggles.forEach(el => el.classList.add('expanded'));
         contents.forEach(el => el.classList.add('expanded'));
         e.target.textContent = 'Collapse All';
         allExpanded = true;
       } else {
         // Collapse all
+        headers.forEach(el => el.classList.remove('expanded'));
         toggles.forEach(el => el.classList.remove('expanded'));
         contents.forEach(el => el.classList.remove('expanded'));
         e.target.textContent = 'Expand All';
