@@ -339,7 +339,7 @@
   white-space: nowrap;
   border: 1px solid transparent;  /* Always have border, just transparent */
   transition: all 0.2s ease;
-  cursor: default;
+  cursor: pointer;
 }
 .skill-badge.skill-highlighted {
   background: #c8c8c8;  /* Darker gray instead of green */

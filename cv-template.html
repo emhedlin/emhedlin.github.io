@@ -394,6 +394,29 @@ $endfor$
       // Remove highlight from this badge
       this.classList.remove('skill-highlighted');
     });
+    
+    // Click to expand highlighted sections
+    badge.addEventListener('click', function() {
+      const skill = this.dataset.skill;
+      
+      // Find all bullet headers that use this skill and expand them
+      document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
+        if (header.dataset.skills && header.dataset.skills.includes(skill)) {
+          const toggle = header.querySelector('.bullet-toggle');
+          const content = header.nextElementSibling;
+          
+          // Only expand if not already expanded
+          if (!header.classList.contains('expanded')) {
+            header.classList.add('expanded');
+            toggle.classList.add('expanded');
+            content.classList.add('expanded');
+          }
+        }
+      });
+      
+      // Update the toggle all button text
+      updateToggleButton();
+    });
   });
 })();
 </script>

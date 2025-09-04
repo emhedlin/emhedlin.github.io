@@ -81,6 +81,10 @@ jobs:
       - label: "Computer Engineering"
         text: "Fine tuned existing object detection models for specific tasks, and deployed the models on edge devices (Nvidia Jetsons) to circumvent cloud costs."
       - label: "Cross-Functional Collaboration"
+        items:
+          - "temp"
+          - "temp"
+          - "temp"
         text: "Worked with academic and industry partners to build data collection policies and quantitative frameworks to better understand sources of variation in complex ecosystems."
     from: "2020 Jan."
     to: "present"
