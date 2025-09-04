@@ -28,13 +28,32 @@ jobs:
       link: ""
     description:
       - label: "Experimentation"
-        text: "Designed and productionized a Bayesian A/B testing framework. The framework leverages git, jenkins, and sagemaker for infrastructure, and conjugate priors on the statistics side to handle end to end analysis of all online experimentation - >200 experiments @ >200M sessions over the past two years."
+        skills: ["Python", "A/B Testing", "Git", "Jenkins", "SageMaker", "AWS"]
+        items:
+          - "Designed and productionized a Bayesian A/B testing framework"
+          - "Leverages git, jenkins, and sagemaker for infrastructure"
+          - "Uses conjugate priors for statistical analysis"
+          - "Processed >200 experiments @ >200M sessions over two years"
       - label: "Advanced Analytics & Causal Inference"
-        text: "Various causal inference projects to derive actionable insights and optimize policy decisions when RCTs were not possible. Methods include linear/generalized linear regression (implemented with DAGs and stakeholder input), difference in difference (pyfixest), double ML (EconML), and BARTs (pymc)."
+        skills: ["Python", "Causal Inference", "DoWhy", "EconML", "PyMC", "Double ML", "BARTs"]
+        items:
+          - "Various causal inference projects for policy optimization"
+          - "Linear/generalized linear regression with DAGs"
+          - "Difference in difference analysis (pyfixest)"
+          - "Double ML implementation (EconML)"
+          - "Bayesian Additive Regression Trees (pymc)"
       - label: "Internal Library Development"
-        text: "Desgined and built internal libraries for standardize cloud access and visualization workflows. Libraries built with uv and/or poetry."
+        skills: ["Python", "AWS", "Git"]
+        items:
+          - "Designed internal libraries for cloud access standardization"
+          - "Built visualization workflow tools"
+          - "Used uv and poetry for package management"
       - label: "Communicating Technical Concepts"
-        text: "Directly partnered with executive leadership (CEO and CCO) on high impact initiatives including price optimization, customer segmentation, and demand forecasting. The collaboration relied on clear and efficient communication of technical concepts."
+        items:
+          - "Partnered directly with CEO and CCO"
+          - "Led price optimization initiatives"
+          - "Developed customer segmentation strategies"
+          - "Built demand forecasting models"
     from: "2022 Dec."
     to: "present"
     tags:
@@ -54,7 +73,11 @@ jobs:
       link: ""
     description:
       - label: "Quantitative Solutions"
-        text: "Provided statistical consulting services for stakeholders. Methods are typically various flavours of generalized linear mixed models."
+        skills: ["R", "Python", "Stan"]
+        items:
+          - "Provided statistical consulting services"
+          - "Implemented generalized linear mixed models"
+          - "Analyzed complex ecological datasets"
       - label: "Computer Engineering"
         text: "Fine tuned existing object detection models for specific tasks, and deployed the models on edge devices (Nvidia Jetsons) to circumvent cloud costs."
       - label: "Cross-Functional Collaboration"
@@ -150,8 +173,8 @@ technical_expertise:
     level: 5
 
 skills:
-  - Python (polars, pymc, nixtla, sklearn, pandas, statsmodels, DoWhy, EconML)
-  - R (brms, stan, lme4, nlme, tidyverse)
+  - Python
+  - R
   - SQL
   - Bash
   - Git
@@ -165,6 +188,14 @@ skills:
   - CUPED
   - Double ML
   - BARTs
+  - PyMC
+  - Polars
+  - Stan
+  - DoWhy
+  - EconML
+  - Nixtla
+  - Jenkins
+  - SageMaker
 
 methodology:
   - Bayesian Inference
@@ -212,9 +243,13 @@ publications:
 achievements:
   - name: "Demand Forecasting System"
     description: Developed a scalable demand forecasting network using Nixtla and polars to support labour planning and logistics.
+    tools: ["Python", "Nixtla", "Polars", "AWS", "Time Series"]
   - name: "Customer Behavior Analysis"
     description: Leveraged causal inference methodologies (DAG-based regression, double ML) to analyze customer behavior and optimize checkout experiences and shipping logistics.
+    tools: ["Python", "DoWhy", "EconML", "DAGs", "Double ML", "Causal Inference"]
   - name: "Interpretable Hierarchical Modeling"
     description: Implemented generalized hierarchical regression models to explore complex patterns in ecosystem data.
+    tools: ["R", "brms", "Stan", "PyMC", "Bayesian", "MCMC"]
   - name: "Published Research"
     description: Co-authored multiple peer-reviewed publications in Behavioural Ecology on Arctic wildlife research using advanced statistical methods.
+    tools: ["R", "Statistical Modeling", "Ecology", "Research"]

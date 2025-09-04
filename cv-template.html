@@ -19,7 +19,7 @@
 
 <!-- Mobile header - only visible on small screens -->
 <header class="mobile-header" aria-label="Mobile navigation">
-  <a href="index.html" class="mobile-brand">$contacts.name$</a>
+  <a href="index.html" class="mobile-brand">erik hedlin</a>
   <button class="hamburger" id="hamburger-btn" aria-controls="mobile-drawer" aria-expanded="false" aria-label="Open menu">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -39,7 +39,7 @@
 <div class="frame cv-page">
   <aside class="rail" aria-label="Primary" id="desktop-rail">
     <div class="brand">
-      <a href="index.html" class="name">$contacts.name$</a>
+      <a href="index.html" class="name">erik hedlin</a>
       <div style="margin-top: 8px;">
         <a href="cv.html" style="font-size: 12px; color: #666; text-decoration: none; font-weight: 600;">cv</a>
       </div>
@@ -119,12 +119,20 @@
               <ul class="job-bullets">
                 $for(it.description)$
                 <li class="job-bullet-item">
-                  <div class="bullet-header">
+                  <div class="bullet-header" $if(it.skills)$data-skills="$for(it.skills)$$it$$sep$,$endfor$"$endif$>
                     <span class="bullet-toggle">›</span>
                     <span class="bullet-label">$it.label$</span>
                   </div>
                   <div class="bullet-content">
+                    $if(it.items)$
+                    <ul class="tree-list">
+                      $for(it.items)$
+                      <li class="tree-item">$it$</li>
+                      $endfor$
+                    </ul>
+                    $else$
                     $it.text$
+                    $endif$
                   </div>
                 </li>
                 $endfor$
@@ -181,11 +189,11 @@
           $if(skills)$
           <section class="cv-sec">
             <h2>Skills/Exposure</h2>
-            <ul>
+            <div class="skills-basket">
               $for(skills)$
-              <li>$it$</li>
+              <span class="skill-badge" data-skill="$it$">$it$</span>
               $endfor$
-            </ul>
+            </div>
           </section>
           $endif$
 
@@ -193,9 +201,16 @@
           <section class="cv-sec">
             <h2>Projects</h2>
             $for(achievements)$
-            <div class="project-entry">
+            <div class="project-entry" $if(it.tools)$data-skills="$for(it.tools)$$it$$sep$,$endfor$"$endif$>
               <div class="project-title">$it.name$</div>
               <div class="project-desc">$it.description$</div>
+              $if(it.tools)$
+              <div class="project-badges">
+                $for(it.tools)$
+                <span class="project-badge">$it$</span>
+                $endfor$
+              </div>
+              $endif$
             </div>
             $endfor$
           </section>
@@ -274,6 +289,72 @@ $endfor$
       allExpanded = false;
     }
   }
+})();
+
+// Skill highlighting interactions
+(function() {
+  // Helper function to highlight skills
+  function highlightSkills(skillsList) {
+    // Reset all badges first
+    document.querySelectorAll('.skill-badge').forEach(badge => {
+      badge.classList.remove('skill-highlighted', 'skill-dimmed');
+    });
+    
+    if (skillsList && skillsList.length > 0) {
+      const skills = skillsList.split(',').map(s => s.trim());
+      
+      // Highlight matching skills
+      document.querySelectorAll('.skill-badge').forEach(badge => {
+        const skillName = badge.dataset.skill;
+        if (skills.includes(skillName)) {
+          badge.classList.add('skill-highlighted');
+        } else {
+          badge.classList.add('skill-dimmed');
+        }
+      });
+    }
+  }
+  
+  // Reset all highlights
+  function resetHighlights() {
+    document.querySelectorAll('.skill-badge').forEach(badge => {
+      badge.classList.remove('skill-highlighted', 'skill-dimmed');
+    });
+  }
+  
+  // Add hover listeners to job bullet headers
+  document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
+    header.addEventListener('mouseenter', function() {
+      highlightSkills(this.dataset.skills);
+    });
+    header.addEventListener('mouseleave', resetHighlights);
+  });
+  
+  // Add hover listeners to project entries
+  document.querySelectorAll('.project-entry[data-skills]').forEach(entry => {
+    entry.addEventListener('mouseenter', function() {
+      highlightSkills(this.dataset.skills);
+    });
+    entry.addEventListener('mouseleave', resetHighlights);
+  });
+  
+  // Optional: Hover over skill badge to see where it's used
+  document.querySelectorAll('.skill-badge').forEach(badge => {
+    badge.addEventListener('mouseenter', function() {
+      const skill = this.dataset.skill;
+      // Highlight all elements that use this skill
+      document.querySelectorAll('[data-skills]').forEach(element => {
+        if (element.dataset.skills && element.dataset.skills.includes(skill)) {
+          element.style.backgroundColor = 'rgba(184, 212, 184, 0.1)';
+        }
+      });
+    });
+    badge.addEventListener('mouseleave', function() {
+      document.querySelectorAll('[data-skills]').forEach(element => {
+        element.style.backgroundColor = '';
+      });
+    });
+  });
 })();
 </script>
 
