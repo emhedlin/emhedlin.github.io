@@ -122,6 +122,13 @@
                   <div class="bullet-header" $if(it.skills)$data-skills="$for(it.skills)$$it$$sep$,$endfor$"$endif$>
                     <span class="bullet-toggle">›</span>
                     <span class="bullet-label">$it.label$</span>
+                    $if(it.skills)$
+                    <div class="inline-skill-badges">
+                      $for(it.skills)$
+                      <span class="inline-skill-badge">$it$</span>
+                      $endfor$
+                    </div>
+                    $endif$
                   </div>
                   <div class="bullet-content">
                     $if(it.items)$
@@ -293,6 +300,14 @@ $endfor$
 
 // Skill highlighting interactions
 (function() {
+  // Simple mobile detection
+  const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
+  
+  // Skip hover interactions on mobile devices
+  if (isMobile) {
+    return;
+  }
+  
   // Helper function to highlight skills
   function highlightSkills(skillsList) {
     // Reset all badges first
@@ -338,21 +353,46 @@ $endfor$
     entry.addEventListener('mouseleave', resetHighlights);
   });
   
-  // Optional: Hover over skill badge to see where it's used
+  // Hover over skill badge to see where it's used
   document.querySelectorAll('.skill-badge').forEach(badge => {
     badge.addEventListener('mouseenter', function() {
       const skill = this.dataset.skill;
-      // Highlight all elements that use this skill
+      
+      // Add visual emphasis to all elements that use this skill
       document.querySelectorAll('[data-skills]').forEach(element => {
         if (element.dataset.skills && element.dataset.skills.includes(skill)) {
-          element.style.backgroundColor = 'rgba(184, 212, 184, 0.1)';
+          // For job bullet headers
+          if (element.classList.contains('bullet-header')) {
+            element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+            element.style.borderLeft = '3px solid #a8a8a8';
+            element.style.paddingLeft = '5px';
+            element.style.marginLeft = '-8px';
+          }
+          // For project entries
+          else if (element.classList.contains('project-entry')) {
+            element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+            element.style.borderLeft = '3px solid #a8a8a8';
+            element.style.paddingLeft = '8px';
+            element.style.marginLeft = '-8px';
+          }
         }
       });
+      
+      // Keep this badge highlighted
+      this.classList.add('skill-highlighted');
     });
+    
     badge.addEventListener('mouseleave', function() {
+      // Reset all styles
       document.querySelectorAll('[data-skills]').forEach(element => {
         element.style.backgroundColor = '';
+        element.style.borderLeft = '';
+        element.style.paddingLeft = '';
+        element.style.marginLeft = '';
       });
+      
+      // Remove highlight from this badge
+      this.classList.remove('skill-highlighted');
     });
   });
 })();
