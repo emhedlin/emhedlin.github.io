@@ -308,6 +308,9 @@ $endfor$
     return;
   }
   
+  // Track currently active skill badge
+  let activeSkill = null;
+  
   // Helper function to highlight skills
   function highlightSkills(skillsList) {
     // Reset all badges first
@@ -337,6 +340,38 @@ $endfor$
     });
   }
   
+  // Apply section highlighting for a specific skill
+  function highlightSectionsForSkill(skill) {
+    document.querySelectorAll('[data-skills]').forEach(element => {
+      if (element.dataset.skills && element.dataset.skills.includes(skill)) {
+        // For job bullet headers
+        if (element.classList.contains('bullet-header')) {
+          element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+          element.style.borderLeft = '3px solid #a8a8a8';
+          element.style.paddingLeft = '5px';
+          element.style.marginLeft = '-8px';
+        }
+        // For project entries
+        else if (element.classList.contains('project-entry')) {
+          element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+          element.style.borderLeft = '3px solid #a8a8a8';
+          element.style.paddingLeft = '8px';
+          element.style.marginLeft = '-8px';
+        }
+      }
+    });
+  }
+  
+  // Clear section highlighting
+  function clearSectionHighlighting() {
+    document.querySelectorAll('[data-skills]').forEach(element => {
+      element.style.backgroundColor = '';
+      element.style.borderLeft = '';
+      element.style.paddingLeft = '';
+      element.style.marginLeft = '';
+    });
+  }
+  
   // Add hover listeners to job bullet headers
   document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
     header.addEventListener('mouseenter', function() {
@@ -358,61 +393,117 @@ $endfor$
     badge.addEventListener('mouseenter', function() {
       const skill = this.dataset.skill;
       
-      // Add visual emphasis to all elements that use this skill
-      document.querySelectorAll('[data-skills]').forEach(element => {
-        if (element.dataset.skills && element.dataset.skills.includes(skill)) {
-          // For job bullet headers
-          if (element.classList.contains('bullet-header')) {
-            element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
-            element.style.borderLeft = '3px solid #a8a8a8';
-            element.style.paddingLeft = '5px';
-            element.style.marginLeft = '-8px';
+      // Only apply hover highlighting if this skill isn't already active
+      if (activeSkill !== skill) {
+        // Add visual emphasis to all elements that use this skill
+        document.querySelectorAll('[data-skills]').forEach(element => {
+          if (element.dataset.skills && element.dataset.skills.includes(skill)) {
+            // For job bullet headers
+            if (element.classList.contains('bullet-header')) {
+              element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+              element.style.borderLeft = '3px solid #a8a8a8';
+              element.style.paddingLeft = '5px';
+              element.style.marginLeft = '-8px';
+            }
+            // For project entries
+            else if (element.classList.contains('project-entry')) {
+              element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+              element.style.borderLeft = '3px solid #a8a8a8';
+              element.style.paddingLeft = '8px';
+              element.style.marginLeft = '-8px';
+            }
           }
-          // For project entries
-          else if (element.classList.contains('project-entry')) {
-            element.style.backgroundColor = 'rgba(200, 200, 200, 0.3)';
-            element.style.borderLeft = '3px solid #a8a8a8';
-            element.style.paddingLeft = '8px';
-            element.style.marginLeft = '-8px';
-          }
-        }
-      });
+        });
+      }
       
-      // Keep this badge highlighted
+      // Keep this badge highlighted (for hover effect)
       this.classList.add('skill-highlighted');
     });
     
     badge.addEventListener('mouseleave', function() {
-      // Reset all styles
-      document.querySelectorAll('[data-skills]').forEach(element => {
-        element.style.backgroundColor = '';
-        element.style.borderLeft = '';
-        element.style.paddingLeft = '';
-        element.style.marginLeft = '';
-      });
+      // Only clear styles if there's no active skill
+      if (!activeSkill) {
+        document.querySelectorAll('[data-skills]').forEach(element => {
+          element.style.backgroundColor = '';
+          element.style.borderLeft = '';
+          element.style.paddingLeft = '';
+          element.style.marginLeft = '';
+        });
+      } else {
+        // If there's an active skill, restore its highlighting
+        highlightSectionsForSkill(activeSkill);
+      }
       
-      // Remove highlight from this badge
+      // Remove hover highlight from this badge (but keep active state if it exists)
       this.classList.remove('skill-highlighted');
     });
     
-    // Click to expand highlighted sections
+    // Click to expand/collapse highlighted sections
     badge.addEventListener('click', function() {
       const skill = this.dataset.skill;
       
-      // Find all bullet headers that use this skill and expand them
-      document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
-        if (header.dataset.skills && header.dataset.skills.includes(skill)) {
-          const toggle = header.querySelector('.bullet-toggle');
-          const content = header.nextElementSibling;
-          
-          // Only expand if not already expanded
-          if (!header.classList.contains('expanded')) {
+      // If clicking the same badge again, collapse its sections
+      if (activeSkill === skill) {
+        // Collapse sections for this skill
+        document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
+          if (header.dataset.skills && header.dataset.skills.includes(skill)) {
+            const toggle = header.querySelector('.bullet-toggle');
+            const content = header.nextElementSibling;
+            
+            header.classList.remove('expanded');
+            toggle.classList.remove('expanded');
+            content.classList.remove('expanded');
+          }
+        });
+        
+        // Clear active skill and badge styling
+        activeSkill = null;
+        document.querySelectorAll('.skill-badge').forEach(b => {
+          b.classList.remove('skill-active');
+        });
+        
+        // Clear section highlighting
+        clearSectionHighlighting();
+      } else {
+        // First collapse all sections if there was a previous active skill
+        if (activeSkill) {
+          document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
+            if (header.dataset.skills && header.dataset.skills.includes(activeSkill)) {
+              const toggle = header.querySelector('.bullet-toggle');
+              const content = header.nextElementSibling;
+              
+              header.classList.remove('expanded');
+              toggle.classList.remove('expanded');
+              content.classList.remove('expanded');
+            }
+          });
+        }
+        
+        // Clear previous badge styling and section highlighting
+        document.querySelectorAll('.skill-badge').forEach(b => {
+          b.classList.remove('skill-active');
+        });
+        clearSectionHighlighting();
+        
+        // Expand sections for the new skill
+        document.querySelectorAll('.bullet-header[data-skills]').forEach(header => {
+          if (header.dataset.skills && header.dataset.skills.includes(skill)) {
+            const toggle = header.querySelector('.bullet-toggle');
+            const content = header.nextElementSibling;
+            
             header.classList.add('expanded');
             toggle.classList.add('expanded');
             content.classList.add('expanded');
           }
-        }
-      });
+        });
+        
+        // Set new active skill and style the badge
+        activeSkill = skill;
+        this.classList.add('skill-active');
+        
+        // Highlight the sections for this skill
+        highlightSectionsForSkill(skill);
+      }
       
       // Update the toggle all button text
       updateToggleButton();

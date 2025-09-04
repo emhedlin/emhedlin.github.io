@@ -349,6 +349,12 @@
 .skill-badge.skill-dimmed {
   opacity: 0.25;
 }
+.skill-badge.skill-active {
+  background: #bd3c49;  /* Use the accent color */
+  color: #fff;  /* White text for contrast */
+  border-color: #bd3c49;
+  font-weight: 600;
+}
 
 /* === Projects === */
 .project-entry { 
